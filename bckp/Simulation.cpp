@@ -74,13 +74,14 @@ Simulation::Simulation(mt19937 genMain, uint nSimEntered)
 
 Simulation::~Simulation() {}
 
-/// initialization
 
+/// initialization
 void Simulation::f_nGen()
 {
     N = f_in_PDF_N(N_mean);
     cout << "Current string number:\t" << N << "\tMean:\t" << N_mean;
 }
+
 
 void Simulation::f_GenerateXY()
 {
