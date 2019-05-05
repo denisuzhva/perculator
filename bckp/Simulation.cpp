@@ -159,8 +159,8 @@ void Simulation::f_FillGraph()
     }
 }
 
-/// conn comp calculating
 
+/// conn comp calculating
 void Simulation::f_FindConnComp() // used in constructor
 {
     v_compData.clear(); // clear the vcm
@@ -181,7 +181,6 @@ void Simulation::f_FindConnComp() // used in constructor
 		}
 }
 
-/// dfs
 
 void Simulation::f_dfs(usint v)
 {
@@ -198,8 +197,8 @@ void Simulation::f_dfs(usint v)
 	}
 }
 
-/// math
 
+/// math
 float Simulation::f_in_PDF(float x, float y)
 {
     return (2*(-x*x - y*y + 1)/3.14);
@@ -230,7 +229,6 @@ float Simulation::f_in_distXY(float xi, float xj, float yi, float yj, usint fact
 
 
 /// cluster analysis
-
 void Simulation::f_FindMulPtFB()
 {
     float *borderCoordAll; // for the coordinates of the border of a cluster area: xL xR yD yU

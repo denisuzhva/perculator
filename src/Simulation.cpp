@@ -2,6 +2,7 @@
 
 #include "Simulation.h"
 #include <iostream>
+#include <algorithm>
 
 
 Simulation::Simulation(std::mt19937 genMain, uint n_mean_main) : gen(genMain), N_mean(n_mean_main) {}
@@ -10,6 +11,7 @@ Simulation::Simulation(std::mt19937 genMain, uint n_mean_main) : gen(genMain), N
 Simulation::~Simulation() {}
 
 
+//Math
 inline usint Simulation::f_in_PDF_N(usint N_mean)
 {
     //uniform_int_distribution<usint> disN(N_mean - (int)(pow((float)(N_mean), N_disp) + 0.5), N_mean + (int)(pow((float)(N_mean), N_disp) + 0.5));
@@ -47,6 +49,9 @@ void Simulation::f_GenerateXY()
     std::uniform_real_distribution<float> disRad(0.0, 1.0);
     std::uniform_real_distribution<float> disAng(0.0, 2*M_PI);
 
+    v_x.resize(N);
+    v_y.resize(N);
+
     for(uint i = 0; i < N; i++)
     {
         rad = sqrt(disRad(gen));
@@ -64,6 +69,8 @@ void Simulation::f_GenerateXY()
 
 void Simulation::f_FillGraph()
 {
+    g_connGraph.resize(N, std::vector<usint>(N));
+
     for(usint i = 0; i < N; i++)
         for(usint j = 0; j < N; j++)
         {
@@ -89,8 +96,9 @@ void Simulation::f_FillGraph()
 /// Conn comp calculating
 void Simulation::f_FindConnComp() // used in constructor
 {
-    v_compData.clear(); // clear the vcm
-    v_comp.clear(); // clear the temp cluster array
+    //v_compData.clear(); // clear the vcm
+    //v_comp.clear(); // clear the temp cluster array
+    v_used.resize(N);
     for(usint i = 0; i < N; ++i)
 		v_used[i] = false; // make all the coordinates unused
 	for(usint i = 0; i < N; ++i)
@@ -120,4 +128,110 @@ void Simulation::f_dfs(usint v)
                 f_dfs(to); // recursively repeat dfs with all the found neighbors not checked yet (unused)
         }
 	}
+}
+
+
+/// cluster analysis
+void Simulation::f_FindMulPtFB()
+{
+    float borderCoordAll[4]; // for the coordinates of the border of a cluster area: xL xR yD yU
+    std::vector<float> v_xObs, v_yObs;
+    float overallArea, MCDist, MCPointX, MCPointY, MCStep, n_k, S_k, eta_k;
+    usint MCNThrown, MCNAll, N_k;
+    uint nF_k, nB_k;
+
+    //cout << v_compData.size() << endl;
+
+    nF_i = 0;
+    nB_i = 0;
+    pF_i = 0;
+    pB_i = 0;
+    sumPtF_av = 0;
+    sumPtB_av = 0;
+    sumPtF_disp = 0;
+    sumPtB_disp = 0;
+
+    for(usint clusIter = 0; clusIter < v_compData.size(); clusIter++)
+    {
+        if(v_compData[clusIter].size() != 0)
+        {
+            N_k = v_compData[clusIter].size();
+
+            v_xObs.resize(N_k);
+            v_yObs.resize(N_k);
+
+            for(usint obsIter = 0; obsIter < v_compData[clusIter].size(); obsIter++)
+            {
+                v_xObs[obsIter] = v_x[v_compData[clusIter][obsIter]];
+                v_yObs[obsIter] = v_y[v_compData[clusIter][obsIter]];
+            }
+
+            borderCoordAll[0] = *std::max_element(v_xObs.begin(), v_xObs.end()) + rs - 0.001; // x max [0]
+            borderCoordAll[1] = *std::min_element(v_xObs.begin(), v_xObs.end()) - rs + 0.001; // x min [1]
+            borderCoordAll[2] = *std::max_element(v_yObs.begin(), v_yObs.end()) + rs - 0.001; // y max [2]
+            borderCoordAll[3] = *std::min_element(v_yObs.begin(), v_yObs.end()) - rs + 0.001; // y min [3]
+
+            MCPointX = borderCoordAll[1] + 0.003;
+            MCPointY = borderCoordAll[3] + 0.003;
+            MCNThrown = 0; // overall
+            MCNAll = 0; // in the string
+            MCDist = 0;
+            //MCStep = 0.01*sqrt(sqrt(sqrt(N_k))); // triple
+            MCStep = 0.01*sqrt(sqrt(sqrt(sqrt(N_k)))); // quadruple
+            //MCStep = 0.01;
+
+            //#pragma omp parallel for
+            for(MCPointY = borderCoordAll[3]; MCPointY <= borderCoordAll[2]; MCPointY += MCStep)
+            {
+                for(MCPointX = borderCoordAll[1]; MCPointX <= borderCoordAll[0]; MCPointX += MCStep)
+                {
+                    MCNThrown++;
+                    //#pragma omp parallel for
+                    for(usint i = 0; i < v_xObs.size(); i++) // no matter v_xObs or v_yObs size
+                    {
+                        MCDist = f_in_distXY(MCPointX, v_xObs[i], MCPointY, v_yObs[i], 0);
+                        if(MCDist <= rs)
+                        {
+                            MCNAll++;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            overallArea = (borderCoordAll[0] - borderCoordAll[1]) * (borderCoordAll[2] - borderCoordAll[3]);
+
+            S_k = overallArea * (1 + 0.087 / N_k) * MCNAll / MCNThrown; // in order to approximate real string size
+            //S_k = overallArea * MCNAll / MCNThrown;
+
+            n_k = sqrt(N_k * S_k / stringSigma);
+            std::poisson_distribution<uint> disPois_nn(n_k);
+            nF_k = disPois_nn(gen);
+            nB_k = disPois_nn(gen);
+            nF_i += (float)nF_k;
+            nB_i += (float)nB_k;
+
+            eta_k = N_k * stringSigma / S_k;
+            sumPtF_av += nF_k * sqrt(sqrt(eta_k));
+            sumPtB_av += nF_k * sqrt(sqrt(eta_k));
+            sumPtF_disp += nF_k * sqrt(eta_k);
+            sumPtB_disp += nB_k * sqrt(eta_k);
+        }
+    }
+    pF_i_av = sumPtF_av / nF_i;
+    pB_i_av = sumPtB_av / nB_i;
+    pF_i_disp = sumPtF_disp / (nF_i * nF_i);
+    pB_i_disp = sumPtB_disp / (nB_i * nB_i);
+    std::normal_distribution<float> disNorm_ptptF(pF_i_av, ptGammaSquared*sqrt(pF_i_disp));
+    std::normal_distribution<float> disNorm_ptptB(pB_i_av, ptGammaSquared*sqrt(pB_i_disp));
+    pF_i = disNorm_ptptF(gen);
+    pB_i = disNorm_ptptB(gen);
+}
+
+
+// Out
+float* Simulation::f_returnNP()
+{
+    static float np_arr[4] = {nF_i, nB_i, pF_i, pB_i};
+    return np_arr;
 }
