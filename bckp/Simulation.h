@@ -50,8 +50,8 @@ class Simulation
         //unsigned int nRangeSize = sizeof(nRange)/sizeof(*nRange); // N range size
 
         //vector<unsigned int> v_nRange; // N range vector
-        array<usint, 7> a_nRange{ {100, 250, 550, 1100, 3300, 5600, 12200} }; // N range array: rho = 3 for RHIC, 11 for LHC; N = rho / rs^2
-        //array<usint, 1> a_nRange{ {100} };
+        //array<usint, 7> a_nRange{ {100, 250, 550, 1100, 3300, 5600, 12200} }; // N range array: rho = 3 for RHIC, 11 for LHC; N = rho / rs^2
+        array<usint, 1> a_nRange{ {500} };
 
         //array<usint, 1> a_nRange{ {24000} }; // FOR TESTS
 

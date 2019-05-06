@@ -52,7 +52,7 @@ Simulation::Simulation(mt19937 genMain, uint nSimEntered)
         for(uint iSim = 0; iSim < numSim; iSim++)
         {
             f_nGen();
-            cout << "\tIteration:\t" << iSim+1 << endl;
+            //cout << "\tIteration:\t" << iSim+1 << endl;
             f_GenerateXY();
             //f_GenerateXY_Neym();
             f_FillGraph();
@@ -79,7 +79,7 @@ Simulation::~Simulation() {}
 void Simulation::f_nGen()
 {
     N = f_in_PDF_N(N_mean);
-    cout << "Current string number:\t" << N << "\tMean:\t" << N_mean;
+    //cout << "Current string number:\t" << N << "\tMean:\t" << N_mean;
 }
 
 
