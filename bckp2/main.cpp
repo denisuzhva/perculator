@@ -12,10 +12,10 @@ using sint = short int;
 using usint = unsigned short int;
 
 
-const usint nn = 7;
-const uint nn_arr[nn] = {100, 250, 550, 1100, 3300, 5600, 12200};
-//const usint nn = 1;
-//const uint nn_arr[nn] = {500};
+//const usint nn = 7;
+//const uint nn_arr[nn] = {100, 250, 550, 1100, 3300, 5600, 12200};
+const usint nn = 1;
+const uint nn_arr[nn] = {500};
 
 
 
