@@ -39,7 +39,7 @@ inline float Simulation::f_in_PDF(float x, float y)
 void Simulation::f_nGen()
 {
     N = f_in_PDF_N(N_mean);
-    std::cout << "Current string number:\t" << N << "\tMean:\t" << N_mean;
+    std::cout << "Current string number:\t" << N << "\tMean:\t" << N_mean << std::endl;
 }
 
 
@@ -232,6 +232,16 @@ void Simulation::f_FindMulPtFB()
 // Out
 float* Simulation::f_returnNP()
 {
-    static float np_arr[4] = {nF_i, nB_i, pF_i, pB_i};
+    static float np_arr[4];
+    np_arr[0] = nF_i;
+    np_arr[1] = nB_i;
+    np_arr[2] = pF_i;
+    np_arr[3] = pB_i;
+    
+    std::cout << np_arr[0] << std::endl;
+    //std::cout << "\nTrue nF:\t" << nF_i << "\t";
+    //std::cout << "\nTrue nB:\t" << nB_i << "\t";
+    //std::cout << "\nTrue pF:\t" << pF_i << "\t";
+    //std::cout << "\nTrue pB:\t" << pB_i << "\t";
     return np_arr;
 }

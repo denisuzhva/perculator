@@ -341,7 +341,7 @@ void Simulation::f_bCalc()
     // nFnB_Av
     for(uint i = 0; i < v_nF_i.size(); i++)
     {
-        nFnB_Av += (float) v_nF_i[i]*v_nB_i[i];
+        nFnB_Av += (float) (v_nF_i[i]*v_nB_i[i]);
     }
     nFnB_Av /= numSim;
 
@@ -373,7 +373,7 @@ void Simulation::f_bCalc()
     // pFpB_Av
     for(uint i = 0; i < v_pF_i.size(); i++)
     {
-        pFpB_Av += (float) v_pF_i[i]*v_pB_i[i];
+        pFpB_Av += (float) (v_pF_i[i]*v_pB_i[i]);
     }
     pFpB_Av /= numSim;
 

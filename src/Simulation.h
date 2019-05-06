@@ -1,13 +1,12 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
-#include <fstream>
 #include <random>
 #include <vector>
 
 #define _USE_MATH_DEFINES
 #include <cmath>
-    #define M_PI       3.14159265358979323846  
-//#include <malloc.h>
+#define M_PI       3.14159265358979323846 
+
 
 using uint = unsigned int;
 using sint = short int;
