@@ -5,13 +5,10 @@
 #include <omp.h>
 
 
-Simulation::Simulation(std::mt19937 genMain, uint n_mean_main, uint n_sim_main) : gen(genMain), N_mean(n_mean_main), n_sim(n_sim_main)
+Simulation::Simulation(std::mt19937 genMain, float eta_mean_main, uint n_sim_main) : gen(genMain), eta_mean(eta_mean_main), n_sim(n_sim_main)
 {
-	nF_vec.resize(n_sim);
-	nB_vec.resize(n_sim);
-	pF_vec.resize(n_sim);
-	pB_vec.resize(n_sim);
-	data_b.open("data_b.txt", std::ios_base::app);
+    v_S.resize(n_sim);
+    N_mean = (int)(eta_mean * S_0 / stringSigma);
 
     for(uint sim_iter = 0; sim_iter < n_sim; sim_iter++)
     {
@@ -28,11 +25,11 @@ Simulation::Simulation(std::mt19937 genMain, uint n_mean_main, uint n_sim_main) 
         //std::cout << "\t f_FillGraph: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
 
         //tLog = clock();
-        f_FindConnComp();
+        //f_FindConnComp();
         //std::cout << "\t f_FindConnComp: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
 
         //tLog = clock();
-        f_FindMulPtFB(sim_iter);
+        //f_FindMulPtFB(sim_iter);
         //std::cout << "\t f_FindMulPtFB: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
 
         //std::cout << "\nIteration:\t" << sim_iter + 1 << "\tcomplete" << std::endl;
@@ -71,9 +68,9 @@ inline float Simulation::f_in_PDF(float x, float y)
 // Initialize
 void Simulation::f_nGen()
 {
-    //N = f_in_PDF_N(N_mean);
-    N = N_mean;
-    std::cout << "Current string number:\t" << N << "\tMean:\t" << N_mean << std::endl;
+    N = f_in_PDF_N(N_mean);
+    //N = N_mean;
+    //std::cout << "Current string number:\t" << N << "\tMean:\t" << N_mean << std::endl;
 }
 
 
@@ -85,7 +82,7 @@ void Simulation::f_GenerateXY()
 
     v_x.resize(N);
     v_y.resize(N);
-
+    
     for(uint i = 0; i < N; i++)
     {
         rad = R*sqrt(disRad(gen));
@@ -97,7 +94,6 @@ void Simulation::f_GenerateXY()
         v_x[i] = xUni;
         v_y[i] = yUni;
     }
-
 }
 
 
@@ -112,7 +108,7 @@ void Simulation::f_FillGraph()
             //cout << -1;
         }
 
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for(usint i = 0; i < N; i++)
     {
         for(usint j = 0; j < N; j++)
@@ -172,20 +168,10 @@ void Simulation::f_FindMulPtFB(uint sim_iter)
     std::vector<float> v_xObs, v_yObs;
     v_xObs.clear();
     v_yObs.clear();
-    float overallArea, MCDist, MCPointX, MCPointY, MCStep, n_k, S_k, eta_k;
+    float overallArea, MCDist, MCPointX, MCPointY, MCStep, n_k, S_k, eta_k, S_i;
     usint MCNThrown, MCNAll, N_k;
-    uint nF_k, nB_k;
 
-    //cout << v_compData.size() << endl;
-
-    nF_i = 0;
-    nB_i = 0;
-    pF_i = 0;
-    pB_i = 0;
-    sumPtF_av = 0;
-    sumPtB_av = 0;
-    sumPtF_disp = 0;
-    sumPtB_disp = 0;
+    S_i = 0;
 
     for(usint clusIter = 0; clusIter < v_compData.size(); clusIter++)
     {
@@ -239,86 +225,42 @@ void Simulation::f_FindMulPtFB(uint sim_iter)
 
             S_k = overallArea * (1 + 0.087 / N_k) * MCNAll / MCNThrown; // in order to approximate real string size at low N limit
             //S_k = overallArea * MCNAll / MCNThrown;
-            std::cout << std::endl << S_k << std::endl;
 
-            n_k = sqrt(N_k * S_k / stringSigma);
-            std::poisson_distribution<uint> disPois_nn(n_k);
-            nF_k = disPois_nn(gen);
-            nB_k = disPois_nn(gen);
-            nF_i += (float)nF_k;
-            nB_i += (float)nB_k;
-
-            eta_k = N_k * stringSigma / S_k;
-            sumPtF_av += nF_k * sqrt(sqrt(eta_k));
-            sumPtB_av += nF_k * sqrt(sqrt(eta_k));
-            sumPtF_disp += nF_k * sqrt(eta_k);
-            sumPtB_disp += nB_k * sqrt(eta_k);
+            S_i += S_k;
         }
     }
-    pF_i_av = sumPtF_av / nF_i;
-    pB_i_av = sumPtB_av / nB_i;
-    pF_i_disp = sumPtF_disp / (nF_i * nF_i);
-    pB_i_disp = sumPtB_disp / (nB_i * nB_i);
-    std::normal_distribution<float> disNorm_ptptF(pF_i_av, ptGammaSquared*sqrt(pF_i_disp));
-    std::normal_distribution<float> disNorm_ptptB(pB_i_av, ptGammaSquared*sqrt(pB_i_disp));
-    pF_i = disNorm_ptptF(gen);
-    pB_i = disNorm_ptptB(gen);
-
-    nF_vec[sim_iter] = nF_i;
-    nB_vec[sim_iter] = nB_i;
-    pF_vec[sim_iter] = pF_i;
-    pB_vec[sim_iter] = pB_i;
+    
+    v_S[sim_iter] = S_i;
 }
 
 
 // Out
-void Simulation::f_bCalc()
+void Simulation::f_sCalc()
 {
-	data_b.open("data_b.txt", std::ios_base::app);
-    data_b << std::endl << N_mean << "\t\t";
+	data_S.open("data_S.txt", std::ios_base::app);
+    data_S << std::endl << N_mean << "\t\t" << eta_mean << "\t\t";
 
-    for(uint i = 0; i < n_sim; i++)
-        nFnB_av += (float)(nF_vec[i]*nB_vec[i]);
-    nFnB_av /= n_sim;
+    S_Av = 0;
+    S2_Av = 0;
+    S_Disp = 0;
+    S_Omega = 0;
+    for(uint ittt = 0; ittt < v_S.size(); ittt++)
+    {
+        S_Av += (float) v_S[ittt];
+    }
+    S_Av /= n_sim;
 
-    for(uint i = 0; i < n_sim; i++)
-        nF_av += (float)(nF_vec[i]);
-    nF_av /= n_sim;
+    for(uint ittt = 0; ittt < v_S.size(); ittt++)
+    {
+        S2_Av += (float) v_S[ittt]*v_S[ittt];
+    }
+    S2_Av /= n_sim;
 
-    for(uint i = 0; i < n_sim; i++)
-        nB_av += (float)(nB_vec[i]);
-    nB_av /= n_sim;
+    S_Disp = S2_Av - S_Av*S_Av;
+    S_Omega = S_Disp / S_Av;
+    S_Omega /= stringSigma; // normed 
 
-    for(uint i = 0; i < n_sim; i++)
-        nF2_av += (float)(nF_vec[i]*nF_vec[i]);
-    nF2_av /= n_sim;
+    data_S << S_Av << "\t" << S_Disp << "\t" << S_Omega << "\t";
 
-    nF_av2 = (float)(nF_av*nF_av);
-
-    // pp
-    for(uint i = 0; i < n_sim; i++)
-        pFpB_av += pF_vec[i]*pB_vec[i];
-    pFpB_av /= n_sim;
-
-    for(uint i = 0; i < n_sim; i++)
-        pF_av += pF_vec[i];
-    pF_av /= n_sim;
-
-    for(uint i = 0; i < n_sim; i++)
-        pB_av += pB_vec[i];
-    pB_av /= n_sim;
-
-    for(uint i = 0; i < n_sim; i++)
-        pF2_av += pF_vec[i]*pF_vec[i];
-    pF2_av /= n_sim;
-
-    pF_av2 = pF_av*pF_av;
-
-    // b
-    b_nn = (nFnB_av - nF_av*nB_av) / (nF2_av - nF_av2);
-    b_pp = (pFpB_av - pF_av*pB_av) / (pF2_av - pF_av2);
-
-    data_b << b_nn << "\t" << b_pp << "\t";
-
-    data_b.close();
+    data_S.close();
 }

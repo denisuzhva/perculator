@@ -18,19 +18,21 @@ int main()
 	clock_t tStart = clock();
 
 	
-	//const usint nn = 7;
+	const usint nn = 4;
 	//const uint nn_arr[nn] = {100, 250, 550, 1100, 3300, 5600, 12200};
-	const usint nn = 1;
-	const uint nn_arr[nn] = {6600};
+	const float eta_arr[nn] = {0.05, 0.1, 0.15, 0.2};
+	//const usint nn = 1;
+	//const uint nn_arr[nn] = {6600};
+	//uint nn_arr[nn];
 	std::mt19937 gen;
 
 	for(usint nn_iter = 0; nn_iter < nn; nn_iter++)
 	{
-		std::cout << "\nN_mean:\t" << nn_arr[nn_iter] << std::endl;
+		std::cout << "\nN_mean:\t" << eta_arr[nn_iter] << std::endl;
 
 		gen.seed(time(0) + rand());
-		Simulation Sim(gen, nn_arr[nn_iter], n_sim);	
-		Sim.f_bCalc();
+		Simulation Sim(gen, eta_arr[nn_iter], n_sim);	
+		//Sim.f_sCalc();
 	}
 
 

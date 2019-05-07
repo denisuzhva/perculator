@@ -18,7 +18,7 @@ class Simulation
 {
     public:
 
-        Simulation(std::mt19937, uint, uint);
+        Simulation(std::mt19937, float, uint);
         virtual ~Simulation();
         void f_nGen();
         void f_GenerateXY(); // for uniform
@@ -26,7 +26,7 @@ class Simulation
         void f_FindConnComp();
         void f_dfs(usint);
         void f_FindMulPtFB(uint);
-        void f_bCalc();
+        void f_sCalc();
         
         inline usint f_in_PDF_N(usint);
         inline float f_in_distXY(float, float, float, float, usint);
@@ -36,10 +36,12 @@ class Simulation
 
         std::mt19937 gen;
 
-        constexpr static float R = 7.5, rs = 0.225, stringSigma = 3.14*rs*rs; // nucleus' radius, string's radius (def. 0.03) and area
+        constexpr static float R = 7.5, rs = 0.225; // nucleus' radius, string's radius (def. 0.03)
+        constexpr static float S_0 = M_PI*R*R, stringSigma = M_PI*rs*rs; // nucleus' and string's area
         constexpr static float ptGammaSquared = 0.5; // proportionality coefficient in pt distribution
 
         usint N_mean, N;
+        float eta_mean;
         uint n_sim;
         std::vector<float> v_x; // vector of x coordinates
         std::vector<float> v_y; // vector of y coordinate
@@ -48,18 +50,10 @@ class Simulation
         std::vector<usint> v_comp; // vector for temp conn comps
         std::vector<std::vector<usint>> v_compData; // matrix for conn comps
 
-        float nF_i, nB_i, pF_i, pB_i; // F, B for 1 simulation
-        float sumPtF_av, sumPtB_av, sumPtF_disp, sumPtB_disp; // sum in av & disp pt calc
-        float pF_i_av, pB_i_av, pF_i_disp, pB_i_disp; // av and disp pt calc
+        std::vector<float> v_S; // vector of areas
+        float S_Av, S2_Av, S_Disp, S_Omega;
 
-    	std::vector<uint> nF_vec, nB_vec;
-    	std::vector<float> pF_vec, pB_vec;
-        
-        float nFnB_av, nF_av, nB_av, nF2_av, nF_av2; // averaging for the multiplicities
-        float pFpB_av, pF_av, pB_av, pF2_av, pF_av2; // averaging for the pt
-        float b_nn, b_pp; 
-
-        std::ofstream data_b;
+        std::ofstream data_S;
 
         clock_t tLog;
 };
