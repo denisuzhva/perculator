@@ -6,6 +6,7 @@
 #include <omp.h>
 #include <malloc.h>
 #include <cmath>
+#include <time.h>
 
 
 using namespace std;
@@ -17,7 +18,7 @@ Simulation::Simulation(mt19937 genMain, uint nSimEntered)
     for(usint iN = 0; iN < a_nRange.size(); iN++)
     {
         N_mean = a_nRange[iN];
-        cout << "\nN_mean:\t" << N_mean;
+        cout << "\nN_mean:\t" << N_mean << endl;
 
         nFnB_Av = 0;
         nF_Av = 0;
@@ -58,7 +59,11 @@ Simulation::Simulation(mt19937 genMain, uint nSimEntered)
             //f_GenerateXY_Neym();
             f_FillGraph();
             f_FindConnComp();
+
+			tLog = clock();
             f_FindMulPtFB();
+			std::cout << "\t f_FindMulPtFB: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
+
             f_WriteData();
         }
 
@@ -79,8 +84,9 @@ Simulation::~Simulation() {}
 /// initialization
 void Simulation::f_nGen()
 {
-    N = f_in_PDF_N(N_mean);
-    //cout << "Current string number:\t" << N << "\tMean:\t" << N_mean;
+    //N = f_in_PDF_N(N_mean);
+    N = N_mean;
+    cout << "Current string number:\t" << N << "\tMean:\t" << N_mean << endl;
 }
 
 

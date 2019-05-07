@@ -4,6 +4,7 @@
 #include <array>
 #include <fstream>
 #include <random>
+#include <time.h>
 
 #define _USE_MATH_DEFINES
 #include <cmath>
@@ -51,7 +52,7 @@ class Simulation
 
         //vector<unsigned int> v_nRange; // N range vector
         //array<usint, 7> a_nRange{ {100, 250, 550, 1100, 3300, 5600, 12200} }; // N range array: rho = 3 for RHIC, 11 for LHC; N = rho / rs^2
-        array<usint, 1> a_nRange{ {6600} };
+        array<usint, 1> a_nRange{ {15000} };
 
         //array<usint, 1> a_nRange{ {24000} }; // FOR TESTS
 
@@ -83,6 +84,8 @@ class Simulation
         float b_nn, b_pp; //
 
         ofstream data_nF_i, data_nB_i, data_pF_i, data_pB_i, data_b;
+
+        clock_t tLog;
 
 };
 

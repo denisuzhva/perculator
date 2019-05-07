@@ -5,10 +5,31 @@
 #include <omp.h>
 
 
-Simulation::Simulation(std::mt19937 genMain, uint n_mean_main) : gen(genMain), N_mean(n_mean_main) {}
+Simulation::Simulation(std::mt19937 genMain, uint n_mean_main, uint n_sim_main) : gen(genMain), N_mean(n_mean_main), n_sim(n_sim_main)
+{
+	nF_vec.resize(n_sim);
+	nB_vec.resize(n_sim);
+	pF_vec.resize(n_sim);
+	pB_vec.resize(n_sim);
+	data_b.open("data_b.txt", std::ios_base::app);
+
+    for(uint sim_iter = 0; sim_iter < n_sim; sim_iter++)
+    {
+        f_nGen();
+        f_GenerateXY();
+        f_FillGraph();
+        f_FindConnComp();
+
+        tLog = clock();
+        f_FindMulPtFB(sim_iter);
+        std::cout << "\t f_FindMulPtFB: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
+        //std::cout << "\nIteration:\t" << sim_iter + 1 << "\tcomplete" << std::endl;
+        //std::cout << "*********************************\n";
+    }
+}
 
 
-Simulation::~Simulation() {}
+Simulation::~Simulation() { std::cout << "\nSim Ende\n"; }
 
 
 //Math
@@ -31,7 +52,7 @@ inline float Simulation::f_in_distXY(float xi, float xj, float yi, float yj, usi
 
 inline float Simulation::f_in_PDF(float x, float y)
 {
-    return (2*(-x*x - y*y + 1)/3.14);
+    return (2*(-x*x - y*y + 1)/3.14); // CHANGE ACCORDING TO R
 }
 
 
@@ -47,7 +68,7 @@ void Simulation::f_nGen()
 void Simulation::f_GenerateXY()
 {
     float ang, rad, xUni, yUni;
-    std::uniform_real_distribution<float> disRad(0.0, 1.0);
+    std::uniform_real_distribution<float> disRad(0.0, R);
     std::uniform_real_distribution<float> disAng(0.0, 2*M_PI);
 
     v_x.resize(N);
@@ -97,8 +118,8 @@ void Simulation::f_FillGraph()
 /// Conn comp calculating
 void Simulation::f_FindConnComp() // used in constructor
 {
-    //v_compData.clear(); // clear the vcm
-    //v_comp.clear(); // clear the temp cluster array
+    v_compData.clear(); // clear the vcm
+    v_comp.clear(); // clear the temp cluster array
     v_used.resize(N);
     for(usint i = 0; i < N; ++i)
 		v_used[i] = false; // make all the coordinates unused
@@ -133,7 +154,7 @@ void Simulation::f_dfs(usint v)
 
 
 /// cluster analysis
-void Simulation::f_FindMulPtFB()
+void Simulation::f_FindMulPtFB(uint sim_iter)
 {
     float borderCoordAll[4]; // for the coordinates of the border of a cluster area: xL xR yD yU
     std::vector<float> v_xObs, v_yObs;
@@ -169,18 +190,18 @@ void Simulation::f_FindMulPtFB()
                 v_yObs[obsIter] = v_y[v_compData[clusIter][obsIter]];
             }
 
-            borderCoordAll[0] = *std::max_element(v_xObs.begin(), v_xObs.end()) + rs - 0.001; // x max [0]
-            borderCoordAll[1] = *std::min_element(v_xObs.begin(), v_xObs.end()) - rs + 0.001; // x min [1]
-            borderCoordAll[2] = *std::max_element(v_yObs.begin(), v_yObs.end()) + rs - 0.001; // y max [2]
-            borderCoordAll[3] = *std::min_element(v_yObs.begin(), v_yObs.end()) - rs + 0.001; // y min [3]
+            borderCoordAll[0] = *std::max_element(v_xObs.begin(), v_xObs.end()) + rs - 0.01; // x max [0]
+            borderCoordAll[1] = *std::min_element(v_xObs.begin(), v_xObs.end()) - rs + 0.01; // x min [1]
+            borderCoordAll[2] = *std::max_element(v_yObs.begin(), v_yObs.end()) + rs - 0.01; // y max [2]
+            borderCoordAll[3] = *std::min_element(v_yObs.begin(), v_yObs.end()) - rs + 0.01; // y min [3]
 
-            MCPointX = borderCoordAll[1] + 0.003;
-            MCPointY = borderCoordAll[3] + 0.003;
+            //MCPointX = borderCoordAll[1] + 0.003; // CHANGE HERE
+            //MCPointY = borderCoordAll[3] + 0.003;
             MCNThrown = 0; // overall
             MCNAll = 0; // in the string
             MCDist = 0;
             //MCStep = 0.01*sqrt(sqrt(sqrt(N_k))); // triple
-            MCStep = 0.01*sqrt(sqrt(sqrt(sqrt(N_k)))); // quadruple
+            MCStep = 0.075*sqrt(sqrt(sqrt(sqrt(N_k)))); // quadruple
             //MCStep = 0.01;
 
             //#pragma omp parallel for
@@ -229,20 +250,62 @@ void Simulation::f_FindMulPtFB()
     std::normal_distribution<float> disNorm_ptptB(pB_i_av, ptGammaSquared*sqrt(pB_i_disp));
     pF_i = disNorm_ptptF(gen);
     pB_i = disNorm_ptptB(gen);
+
+    nF_vec[sim_iter] = nF_i;
+    nB_vec[sim_iter] = nB_i;
+    pF_vec[sim_iter] = pF_i;
+    pB_vec[sim_iter] = pB_i;
 }
 
 
 // Out
-float* Simulation::f_returnNP()
+void Simulation::f_bCalc()
 {
-    static float np_arr[4];
-    np_arr[0] = nF_i;
-    np_arr[1] = nB_i;
-    np_arr[2] = pF_i;
-    np_arr[3] = pB_i;
-    //std::cout << "\nTrue nF:\t" << nF_i << "\t";
-    //std::cout << "\nTrue nB:\t" << nB_i << "\t";
-    //std::cout << "\nTrue pF:\t" << pF_i << "\t";
-    //std::cout << "\nTrue pB:\t" << pB_i << "\t";
-    return np_arr;
+	data_b.open("data_b.txt", std::ios_base::app);
+    data_b << std::endl << N_mean << "\t\t";
+
+    for(uint i = 0; i < n_sim; i++)
+        nFnB_av += (float)(nF_vec[i]*nB_vec[i]);
+    nFnB_av /= n_sim;
+
+    for(uint i = 0; i < n_sim; i++)
+        nF_av += (float)(nF_vec[i]);
+    nF_av /= n_sim;
+
+    for(uint i = 0; i < n_sim; i++)
+        nB_av += (float)(nB_vec[i]);
+    nB_av /= n_sim;
+
+    for(uint i = 0; i < n_sim; i++)
+        nF2_av += (float)(nF_vec[i]*nF_vec[i]);
+    nF2_av /= n_sim;
+
+    nF_av2 = (float)(nF_av*nF_av);
+
+    // pp
+    for(uint i = 0; i < n_sim; i++)
+        pFpB_av += pF_vec[i]*pB_vec[i];
+    pFpB_av /= n_sim;
+
+    for(uint i = 0; i < n_sim; i++)
+        pF_av += pF_vec[i];
+    pF_av /= n_sim;
+
+    for(uint i = 0; i < n_sim; i++)
+        pB_av += pB_vec[i];
+    pB_av /= n_sim;
+
+    for(uint i = 0; i < n_sim; i++)
+        pF2_av += pF_vec[i]*pF_vec[i];
+    pF2_av /= n_sim;
+
+    pF_av2 = pF_av*pF_av;
+
+    // b
+    b_nn = (nFnB_av - nF_av*nB_av) / (nF2_av - nF_av2);
+    b_pp = (pFpB_av - pF_av*pB_av) / (pF2_av - pF_av2);
+
+    data_b << b_nn << "\t" << b_pp << "\t";
+
+    data_b.close();
 }
