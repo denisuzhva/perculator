@@ -4,6 +4,7 @@
 #include <random>
 #include <time.h>
 #include <fstream>
+#include <omp.h>
 
 #define _USE_MATH_DEFINES
 #define M_PI       3.14159265358979323846 
@@ -17,7 +18,7 @@ using usint = unsigned short int;
 //const usint nn = 7;
 //const usint nn_arr[nn] = {100, 250, 550, 1100, 3300, 5600, 12200};
 const usint nn = 1;
-const uint nn_arr[nn] = {15000};
+const uint nn_arr[nn] = {6600};
 
 constexpr static float rs = 0.03, stringSigma = 3.14*rs*rs; // string's radius (def. 0.03) and area
 constexpr static float ptGammaSquared = 0.5; // proportionality coefficient in pt distribution
@@ -106,7 +107,7 @@ void f_FillGraph()
             //cout << -1;
         }
 
-    //#pragma omp parallel for
+    #pragma omp parallel for
     for(usint i = 0; i < N; i++)
     {
         for(usint j = 0; j < N; j++)
@@ -286,7 +287,7 @@ int main()
 
 	for(usint nn_iter = 0; nn_iter < nn; nn_iter++)
 	{
-		//std::cout << "\nN_mean:\t" << nn_arr[nn_iter];
+		std::cout << "\nN_mean:\t" << nn_arr[nn_iter];
 		//data_nF_i << std::endl << nn_arr[nn_iter] << "\t\t";
 		//data_nB_i << std::endl << nn_arr[nn_iter] << "\t\t";
 		//data_pF_i << std::endl << nn_arr[nn_iter] << "\t\t";
