@@ -1,6 +1,5 @@
 #include <iostream>
-#include <windows.h>
-#include "Simulation.h"
+#include "include/Simulation.h"
 #include <random>
 #include <time.h>
 
@@ -21,6 +20,5 @@ int main()
     Simulation Sim(gen, nSim);
 
     cout << "Done! Execution time: " << (float)(clock() - tStart)/CLOCKS_PER_SEC << " sec." << endl;
-    system("PAUSE");
     return 0;
 }

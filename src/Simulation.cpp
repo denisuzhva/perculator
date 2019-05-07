@@ -1,11 +1,12 @@
 #define _USE_MATH_DEFINES
 
-#include "Simulation.h"
+#include "../include/Simulation.h"
 #include <iostream>
 #include <algorithm>
 #include <omp.h>
 #include <malloc.h>
 #include <cmath>
+#include <time.h>
 
 
 using namespace std;
@@ -17,6 +18,7 @@ Simulation::Simulation(mt19937 genMain, uint nSimEntered)
     for(usint iN = 0; iN < a_nRange.size(); iN++)
     {
         N_mean = a_nRange[iN];
+        cout << "\nN_mean:\t" << N_mean << endl;
 
         nFnB_Av = 0;
         nF_Av = 0;
@@ -52,12 +54,16 @@ Simulation::Simulation(mt19937 genMain, uint nSimEntered)
         for(uint iSim = 0; iSim < numSim; iSim++)
         {
             f_nGen();
-            cout << "\tIteration:\t" << iSim+1 << endl;
+            //cout << "\tIteration:\t" << iSim+1 << endl;
             f_GenerateXY();
             //f_GenerateXY_Neym();
             f_FillGraph();
             f_FindConnComp();
+
+			tLog = clock();
             f_FindMulPtFB();
+			std::cout << "\t f_FindMulPtFB: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
+
             f_WriteData();
         }
 
@@ -74,13 +80,15 @@ Simulation::Simulation(mt19937 genMain, uint nSimEntered)
 
 Simulation::~Simulation() {}
 
-/// initialization
 
+/// initialization
 void Simulation::f_nGen()
 {
-    N = f_in_PDF_N(N_mean);
-    cout << "Current string number:\t" << N << "\tMean:\t" << N_mean;
+    //N = f_in_PDF_N(N_mean);
+    N = N_mean;
+    cout << "Current string number:\t" << N << "\tMean:\t" << N_mean << endl;
 }
+
 
 void Simulation::f_GenerateXY()
 {
@@ -158,8 +166,8 @@ void Simulation::f_FillGraph()
     }
 }
 
-/// conn comp calculating
 
+/// conn comp calculating
 void Simulation::f_FindConnComp() // used in constructor
 {
     v_compData.clear(); // clear the vcm
@@ -180,7 +188,6 @@ void Simulation::f_FindConnComp() // used in constructor
 		}
 }
 
-/// dfs
 
 void Simulation::f_dfs(usint v)
 {
@@ -197,8 +204,8 @@ void Simulation::f_dfs(usint v)
 	}
 }
 
-/// math
 
+/// math
 float Simulation::f_in_PDF(float x, float y)
 {
     return (2*(-x*x - y*y + 1)/3.14);
@@ -229,7 +236,6 @@ float Simulation::f_in_distXY(float xi, float xj, float yi, float yj, usint fact
 
 
 /// cluster analysis
-
 void Simulation::f_FindMulPtFB()
 {
     float *borderCoordAll; // for the coordinates of the border of a cluster area: xL xR yD yU
@@ -342,7 +348,7 @@ void Simulation::f_bCalc()
     // nFnB_Av
     for(uint i = 0; i < v_nF_i.size(); i++)
     {
-        nFnB_Av += (float) v_nF_i[i]*v_nB_i[i];
+        nFnB_Av += (float) (v_nF_i[i]*v_nB_i[i]);
     }
     nFnB_Av /= numSim;
 
@@ -374,7 +380,7 @@ void Simulation::f_bCalc()
     // pFpB_Av
     for(uint i = 0; i < v_pF_i.size(); i++)
     {
-        pFpB_Av += (float) v_pF_i[i]*v_pB_i[i];
+        pFpB_Av += (float) (v_pF_i[i]*v_pB_i[i]);
     }
     pFpB_Av /= numSim;
 
