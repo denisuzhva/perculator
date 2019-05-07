@@ -71,8 +71,8 @@ inline float Simulation::f_in_PDF(float x, float y)
 // Initialize
 void Simulation::f_nGen()
 {
-    //N = f_in_PDF_N(N_mean);
-    N = N_mean;
+    N = f_in_PDF_N(N_mean);
+    //N = N_mean;
     std::cout << "Current string number:\t" << N << "\tMean:\t" << N_mean << std::endl;
 }
 
@@ -82,6 +82,9 @@ void Simulation::f_GenerateXY()
     float ang, rad, xUni, yUni;
     std::uniform_real_distribution<float> disRad(0.0, 1.0);
     std::uniform_real_distribution<float> disAng(0.0, 2*M_PI);
+
+    v_x.clear();
+    v_y.clear();
 
     v_x.resize(N);
     v_y.resize(N);
@@ -103,6 +106,7 @@ void Simulation::f_GenerateXY()
 
 void Simulation::f_FillGraph()
 {
+    g_connGraph.clear();
     g_connGraph.resize(N, std::vector<usint>(N));
 
     for(usint i = 0; i < N; i++)
@@ -132,6 +136,7 @@ void Simulation::f_FindConnComp() // used in constructor
 {
     v_compData.clear(); // clear the vcm
     v_comp.clear(); // clear the temp cluster array
+    v_used.clear();
     v_used.resize(N);
     for(usint i = 0; i < N; ++i)
 		v_used[i] = false; // make all the coordinates unused
@@ -170,8 +175,6 @@ void Simulation::f_FindMulPtFB(uint sim_iter)
 {
     float borderCoordAll[4]; // for the coordinates of the border of a cluster area: xL xR yD yU
     std::vector<float> v_xObs, v_yObs;
-    v_xObs.clear();
-    v_yObs.clear();
     float overallArea, MCDist, MCPointX, MCPointY, MCStep, n_k, S_k, eta_k;
     usint MCNThrown, MCNAll, N_k;
     uint nF_k, nB_k;
@@ -239,7 +242,6 @@ void Simulation::f_FindMulPtFB(uint sim_iter)
 
             S_k = overallArea * (1 + 0.087 / N_k) * MCNAll / MCNThrown; // in order to approximate real string size at low N limit
             //S_k = overallArea * MCNAll / MCNThrown;
-            std::cout << std::endl << S_k << std::endl;
 
             n_k = sqrt(N_k * S_k / stringSigma);
             std::poisson_distribution<uint> disPois_nn(n_k);
