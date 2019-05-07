@@ -15,14 +15,26 @@ Simulation::Simulation(std::mt19937 genMain, uint n_mean_main, uint n_sim_main) 
 
     for(uint sim_iter = 0; sim_iter < n_sim; sim_iter++)
     {
+        //tLog = clock();
         f_nGen();
-        f_GenerateXY();
-        f_FillGraph();
-        f_FindConnComp();
+        //std::cout << "\t f_nGen: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
 
-        tLog = clock();
+        //tLog = clock();
+        f_GenerateXY();
+        //std::cout << "\t f_GenerateXY: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
+
+        //tLog = clock();
+        f_FillGraph();
+        //std::cout << "\t f_FillGraph: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
+
+        //tLog = clock();
+        f_FindConnComp();
+        //std::cout << "\t f_FindConnComp: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
+
+        //tLog = clock();
         f_FindMulPtFB(sim_iter);
-        std::cout << "\t f_FindMulPtFB: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
+        //std::cout << "\t f_FindMulPtFB: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
+
         //std::cout << "\nIteration:\t" << sim_iter + 1 << "\tcomplete" << std::endl;
         //std::cout << "*********************************\n";
     }
@@ -68,7 +80,7 @@ void Simulation::f_nGen()
 void Simulation::f_GenerateXY()
 {
     float ang, rad, xUni, yUni;
-    std::uniform_real_distribution<float> disRad(0.0, R);
+    std::uniform_real_distribution<float> disRad(0.0, 1.0);
     std::uniform_real_distribution<float> disAng(0.0, 2*M_PI);
 
     v_x.resize(N);
@@ -76,7 +88,7 @@ void Simulation::f_GenerateXY()
 
     for(uint i = 0; i < N; i++)
     {
-        rad = sqrt(disRad(gen));
+        rad = R*sqrt(disRad(gen));
         ang = disAng(gen);
         xUni = rad * cos(ang);
         yUni = rad * sin(ang);
@@ -200,8 +212,8 @@ void Simulation::f_FindMulPtFB(uint sim_iter)
             MCNThrown = 0; // overall
             MCNAll = 0; // in the string
             MCDist = 0;
-            //MCStep = 0.01*sqrt(sqrt(sqrt(N_k))); // triple
-            MCStep = 0.075*sqrt(sqrt(sqrt(sqrt(N_k)))); // quadruple
+            MCStep = R*0.01*sqrt(sqrt(sqrt(N_k))); // triple
+            //MCStep = R*0.01*sqrt(sqrt(sqrt(sqrt(N_k)))); // quadruple
             //MCStep = 0.01;
 
             //#pragma omp parallel for
@@ -225,8 +237,9 @@ void Simulation::f_FindMulPtFB(uint sim_iter)
 
             overallArea = (borderCoordAll[0] - borderCoordAll[1]) * (borderCoordAll[2] - borderCoordAll[3]);
 
-            S_k = overallArea * (1 + 0.087 / N_k) * MCNAll / MCNThrown; // in order to approximate real string size
+            S_k = overallArea * (1 + 0.087 / N_k) * MCNAll / MCNThrown; // in order to approximate real string size at low N limit
             //S_k = overallArea * MCNAll / MCNThrown;
+            std::cout << std::endl << S_k << std::endl;
 
             n_k = sqrt(N_k * S_k / stringSigma);
             std::poisson_distribution<uint> disPois_nn(n_k);

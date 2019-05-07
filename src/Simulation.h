@@ -3,6 +3,7 @@
 #include <random>
 #include <vector>
 #include <fstream>
+#include <time.h>
 
 #define _USE_MATH_DEFINES
 #define M_PI       3.14159265358979323846 
