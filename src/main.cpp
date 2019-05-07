@@ -19,10 +19,10 @@ int main()
 
 	
 	const usint nn = 4;
-	//const uint nn_arr[nn] = {100, 250, 550, 1100, 3300, 5600, 12200};
 	const float eta_arr[nn] = {0.05, 0.1, 0.15, 0.2};
-	//const usint nn = 1;
+	//const float eta_arr[nn] = {0.2};
 	//const uint nn_arr[nn] = {6600};
+	//const uint nn_arr[nn] = {100, 250, 550, 1100, 3300, 5600, 12200};
 	//uint nn_arr[nn];
 	std::mt19937 gen;
 
@@ -32,7 +32,7 @@ int main()
 
 		gen.seed(time(0) + rand());
 		Simulation Sim(gen, eta_arr[nn_iter], n_sim);	
-		//Sim.f_sCalc();
+		Sim.f_sCalc();
 	}
 
 

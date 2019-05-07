@@ -25,11 +25,11 @@ Simulation::Simulation(std::mt19937 genMain, float eta_mean_main, uint n_sim_mai
         //std::cout << "\t f_FillGraph: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
 
         //tLog = clock();
-        //f_FindConnComp();
+        f_FindConnComp();
         //std::cout << "\t f_FindConnComp: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
 
         //tLog = clock();
-        //f_FindMulPtFB(sim_iter);
+        f_FindMulPtFB(sim_iter);
         //std::cout << "\t f_FindMulPtFB: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
 
         //std::cout << "\nIteration:\t" << sim_iter + 1 << "\tcomplete" << std::endl;
@@ -80,6 +80,8 @@ void Simulation::f_GenerateXY()
     std::uniform_real_distribution<float> disRad(0.0, 1.0);
     std::uniform_real_distribution<float> disAng(0.0, 2*M_PI);
 
+    v_x.clear();
+    v_y.clear();
     v_x.resize(N);
     v_y.resize(N);
     
@@ -99,6 +101,7 @@ void Simulation::f_GenerateXY()
 
 void Simulation::f_FillGraph()
 {
+    g_connGraph.clear();
     g_connGraph.resize(N, std::vector<usint>(N));
 
     for(usint i = 0; i < N; i++)
@@ -108,7 +111,7 @@ void Simulation::f_FillGraph()
             //cout << -1;
         }
 
-    //#pragma omp parallel for
+    #pragma omp parallel for
     for(usint i = 0; i < N; i++)
     {
         for(usint j = 0; j < N; j++)
@@ -128,6 +131,7 @@ void Simulation::f_FindConnComp() // used in constructor
 {
     v_compData.clear(); // clear the vcm
     v_comp.clear(); // clear the temp cluster array
+    v_used.clear();
     v_used.resize(N);
     for(usint i = 0; i < N; ++i)
 		v_used[i] = false; // make all the coordinates unused
@@ -172,6 +176,8 @@ void Simulation::f_FindMulPtFB(uint sim_iter)
     usint MCNThrown, MCNAll, N_k;
 
     S_i = 0;
+
+    //std::cout << v_compData.size() << std::endl;
 
     for(usint clusIter = 0; clusIter < v_compData.size(); clusIter++)
     {
