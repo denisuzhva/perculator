@@ -11,7 +11,6 @@ Simulation::Simulation(std::mt19937 genMain, uint n_mean_main, uint n_sim_main) 
 	nB_vec.resize(n_sim);
 	pF_vec.resize(n_sim);
 	pB_vec.resize(n_sim);
-	data_b.open("data_b.txt", std::ios_base::app);
 
     for(uint sim_iter = 0; sim_iter < n_sim; sim_iter++)
     {
@@ -277,6 +276,7 @@ void Simulation::f_FindMulPtFB(uint sim_iter)
 void Simulation::f_bCalc()
 {
 	data_b.open("data_b.txt", std::ios_base::app);
+
     data_b << std::endl << N_mean << "\t\t";
 
     for(uint i = 0; i < n_sim; i++)
@@ -321,6 +321,6 @@ void Simulation::f_bCalc()
     b_pp = (pFpB_av - pF_av*pB_av) / (pF2_av - pF_av2);
 
     data_b << b_nn << "\t" << b_pp << "\t";
-
+    
     data_b.close();
 }
