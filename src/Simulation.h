@@ -18,7 +18,7 @@ class Simulation
 {
     public:
 
-        Simulation(std::mt19937, uint, uint);
+        Simulation(std::mt19937, usint, uint);
         virtual ~Simulation();
         void f_nGen();
         void f_GenerateXY(); // for uniform

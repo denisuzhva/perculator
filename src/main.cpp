@@ -18,10 +18,10 @@ int main()
 	clock_t tStart = clock();
 
 	
-	const usint nn = 7;
-	const uint nn_arr[nn] = {100, 250, 550, 1100, 3300, 5600, 12200};
-	//const usint nn = 1;
-	//const uint nn_arr[nn] = {6600};
+	//const usint nn = 7;
+	//const usint nn_arr[nn] = {100, 250, 550, 1100, 3300, 5600, 12200};
+	const usint nn = 1;
+	const uint nn_arr[nn] = {5600};
 	std::mt19937 gen;
 
 	for(usint nn_iter = 0; nn_iter < nn; nn_iter++)

@@ -5,7 +5,7 @@
 #include <omp.h>
 
 
-Simulation::Simulation(std::mt19937 genMain, uint n_mean_main, uint n_sim_main) : gen(genMain), N_mean(n_mean_main), n_sim(n_sim_main)
+Simulation::Simulation(std::mt19937 genMain, usint n_mean_main, uint n_sim_main) : gen(genMain), N_mean(n_mean_main), n_sim(n_sim_main)
 {
 	nF_vec.resize(n_sim);
 	nB_vec.resize(n_sim);
@@ -34,8 +34,8 @@ Simulation::Simulation(std::mt19937 genMain, uint n_mean_main, uint n_sim_main) 
         f_FindMulPtFB(sim_iter);
         //std::cout << "\t f_FindMulPtFB: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
 
-        //std::cout << "\nIteration:\t" << sim_iter + 1 << "\tcomplete" << std::endl;
-        //std::cout << "*********************************\n";
+        std::cout << "\nIteration:\t" << sim_iter + 1 << "\tcomplete" << std::endl;
+        std::cout << "*********************************\n";
     }
 }
 
@@ -105,8 +105,9 @@ void Simulation::f_GenerateXY()
 
 void Simulation::f_FillGraph()
 {
-    g_connGraph.clear();
-    g_connGraph.resize(N, std::vector<usint>(N));
+    //g_connGraph.clear();
+    //g_connGraph.resize(N, std::vector<usint>(N));
+    g_connGraph = std::vector<std::vector<usint>>(N, std::vector<usint>(N));
 
     for(usint i = 0; i < N; i++)
         for(usint j = 0; j < N; j++)
@@ -174,13 +175,13 @@ void Simulation::f_FindMulPtFB(uint sim_iter)
 {
     float borderCoordAll[4]; // for the coordinates of the border of a cluster area: xL xR yD yU
     std::vector<float> v_xObs, v_yObs;
-    float overallArea, MCDist, MCPointX, MCPointY, MCStep, n_k, S_k, eta_k;
-    usint MCNThrown, MCNAll, N_k;
+    float overallArea, MCDist, MCPointX, MCPointY, MCStep, n_k, S_k, eta_k; // k is an index of a cluster
+    usint MCNThrown, MCNHit, N_k;
     uint nF_k, nB_k;
 
     //cout << v_compData.size() << endl;
 
-    nF_i = 0;
+    nF_i = 0; // i is an index of an event
     nB_i = 0;
     pF_i = 0;
     pB_i = 0;
@@ -189,11 +190,11 @@ void Simulation::f_FindMulPtFB(uint sim_iter)
     sumPtF_disp = 0;
     sumPtB_disp = 0;
 
-    for(usint clusIter = 0; clusIter < v_compData.size(); clusIter++)
+    for(usint clusIter = 0; clusIter < v_compData.size(); clusIter++) // iterate over all clusters
     {
         if(v_compData[clusIter].size() != 0)
         {
-            N_k = v_compData[clusIter].size();
+            N_k = v_compData[clusIter].size(); // number of strings in a cluster
 
             v_xObs.resize(N_k);
             v_yObs.resize(N_k);
@@ -212,11 +213,11 @@ void Simulation::f_FindMulPtFB(uint sim_iter)
             //MCPointX = borderCoordAll[1] + 0.003; // CHANGE HERE
             //MCPointY = borderCoordAll[3] + 0.003;
             MCNThrown = 0; // overall
-            MCNAll = 0; // in the string
+            MCNHit = 0; // in the string
             MCDist = 0;
-            MCStep = R*0.01*sqrt(sqrt(sqrt(N_k))); // triple
+            //MCStep = R*0.01*sqrt(sqrt(sqrt(N_k))); // triple
             //MCStep = R*0.01*sqrt(sqrt(sqrt(sqrt(N_k)))); // quadruple
-            //MCStep = 0.01;
+            MCStep = R*0.01;
 
             //#pragma omp parallel for
             for(MCPointY = borderCoordAll[3]; MCPointY <= borderCoordAll[2]; MCPointY += MCStep)
@@ -230,7 +231,7 @@ void Simulation::f_FindMulPtFB(uint sim_iter)
                         MCDist = f_in_distXY(MCPointX, v_xObs[i], MCPointY, v_yObs[i], 0);
                         if(MCDist <= rs)
                         {
-                            MCNAll++;
+                            MCNHit++;
                             break;
                         }
                     }
@@ -239,8 +240,8 @@ void Simulation::f_FindMulPtFB(uint sim_iter)
 
             overallArea = (borderCoordAll[0] - borderCoordAll[1]) * (borderCoordAll[2] - borderCoordAll[3]);
 
-            S_k = overallArea * (1 + 0.087 / N_k) * MCNAll / MCNThrown; // in order to approximate real string size at low N limit
-            //S_k = overallArea * MCNAll / MCNThrown;
+            //S_k = overallArea * (1 + 0.087 / N_k) * MCNHit / MCNThrown; // in order to approximate real string size at low N limit
+            S_k = overallArea * MCNHit / MCNThrown;
 
             n_k = sqrt(N_k * S_k / stringSigma);
             std::poisson_distribution<uint> disPois_nn(n_k);
