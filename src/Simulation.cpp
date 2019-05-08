@@ -11,7 +11,6 @@ Simulation::Simulation(std::mt19937 genMain, uint n_mean_main, uint n_sim_main) 
 	nB_vec.resize(n_sim);
 	pF_vec.resize(n_sim);
 	pB_vec.resize(n_sim);
-	data_b.open("data_b.txt", std::ios_base::app);
 
     for(uint sim_iter = 0; sim_iter < n_sim; sim_iter++)
     {
