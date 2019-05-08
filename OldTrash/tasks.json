@@ -1,0 +1,117 @@
+{
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "g++.exe build main object",
+      "command": "C:\\mingw-w64\\x86_64-8.1.0-posix-sjlj-rt_v6-rev0\\mingw64\\bin\\g++.exe",
+      "args": [
+        "-std=c++17",
+        "-fexceptions",
+        "-O2",
+        "-fopenmp",
+        "-Iinclude",
+        "-c",
+        "D:\\dev\\PHYS_CERN\\Perculator\\perculator\\src\\main.cpp",
+        "-o",
+        "D:\\dev\\PHYS_CERN\\Perculator\\perculator\\obj\\Release\\main.o"
+      ],
+      "options": {
+        "cwd": "C:\\mingw-w64\\x86_64-8.1.0-posix-sjlj-rt_v6-rev0\\mingw64\\bin"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "type": "shell",
+      "label": "g++.exe build class object",
+      "command": "C:\\mingw-w64\\x86_64-8.1.0-posix-sjlj-rt_v6-rev0\\mingw64\\bin\\g++.exe",
+      "args": [
+        "-std=c++17",
+        "-fexceptions",
+        "-O2",
+        "-fopenmp",
+        "-Iinclude",
+        "-c",
+        "D:\\dev\\PHYS_CERN\\Perculator\\perculator\\src\\Simulation.cpp",
+        "-o",
+        "D:\\dev\\PHYS_CERN\\Perculator\\perculator\\obj\\Release\\Simulation.o"
+      ],
+      "options": {
+        "cwd": "C:\\mingw-w64\\x86_64-8.1.0-posix-sjlj-rt_v6-rev0\\mingw64\\bin"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "type": "shell",
+      "label": "g++.exe build executable",
+      "command": "C:\\mingw-w64\\x86_64-8.1.0-posix-sjlj-rt_v6-rev0\\mingw64\\bin\\g++.exe",
+      "args": [
+        "-o",
+        "D:\\dev\\PHYS_CERN\\Perculator\\perculator\\bin\\Release\\perc.exe",
+        "D:\\dev\\PHYS_CERN\\Perculator\\perculator\\obj\\Release\\main.o",
+        "D:\\dev\\PHYS_CERN\\Perculator\\perculator\\obj\\Release\\Simulation.o",
+        "-s",
+        "-lgomp",
+        "-pthread"
+      ],
+      "options": {
+        "cwd": "C:\\mingw-w64\\x86_64-8.1.0-posix-sjlj-rt_v6-rev0\\mingw64\\bin"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "type": "shell",
+      "label": "g++.exe build for debug",
+      "command": "C:\\mingw-w64\\x86_64-8.1.0-posix-sjlj-rt_v6-rev0\\mingw64\\bin\\g++.exe",
+      "args": [
+        "-std=c++17",
+        "-fopenmp",
+        "-g",
+        "-o",
+        "D:\\dev\\PHYS_CERN\\Perculator\\perculator\\bin\\Debug\\perc.exe",
+        "D:\\dev\\PHYS_CERN\\Perculator\\perculator\\src\\main.cpp",
+        "D:\\dev\\PHYS_CERN\\Perculator\\perculator\\src\\Simulation.cpp",
+        "-s",
+        "-lgomp",
+        "-pthread"
+      ],
+      "options": {
+        "cwd": "C:\\mingw-w64\\x86_64-8.1.0-posix-sjlj-rt_v6-rev0\\mingw64\\bin"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "type": "shell",
+      "label": "g++.exe build active file",
+      "command": "C:\\mingw-w64\\x86_64-8.1.0-posix-sjlj-rt_v6-rev0\\mingw64\\bin\\g++.exe",
+      "args": [
+        "-g",
+        "${file}",
+        "-o",
+        "${fileDirname}\\${fileBasenameNoExtension}.exe"
+      ],
+      "options": {
+        "cwd": "C:\\mingw-w64\\x86_64-8.1.0-posix-sjlj-rt_v6-rev0\\mingw64\\bin"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ]
+    }
+  ],
+  "version": "2.0.0"
+}
