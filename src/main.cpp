@@ -34,6 +34,8 @@ int main()
 	nB_vec.resize(n_sim);
 	pF_vec.resize(n_sim);
 	pB_vec.resize(n_sim);
+	pF_vec_test.resize(n_sim);
+	pB_vec_test.resize(n_sim);
 	std::ofstream data_nF_i, data_nB_i, data_pF_i, data_pB_i, data_b;
 	std::ofstream data_pF_test_i, data_pB_test_i; // TEST
 	float nFnB_av, nF_av, nB_av, nF2_av, nF_av2; // averaging for the multiplicities
