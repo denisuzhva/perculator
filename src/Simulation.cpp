@@ -38,8 +38,8 @@ inline float Simulation::f_in_PDF(float x, float y)
 // Initialize
 void Simulation::f_nGen()
 {
-    //N = f_in_PDF_N(N_mean);
-    N = N_mean;
+    N = f_in_PDF_N(N_mean);
+    //N = N_mean;
     std::cout << "Current string number:\t" << N << "\tMean:\t" << N_mean << std::endl;
 }
 
@@ -50,12 +50,12 @@ void Simulation::f_GenerateXY()
     std::uniform_real_distribution<float> disRad(0.0, 1.0);
     std::uniform_real_distribution<float> disAng(0.0, 2*M_PI);
 
-    v_x.resize(N);
-    v_y.resize(N);
+    v_x = std::vector<float>(N);
+    v_y = std::vector<float>(N);
 
     for(uint i = 0; i < N; i++)
     {
-        rad = sqrt(disRad(gen));
+        rad = R * sqrt(disRad(gen));
         ang = disAng(gen);
         xUni = rad * cos(ang);
         yUni = rad * sin(ang);
@@ -132,13 +132,11 @@ void Simulation::f_dfs(usint v)
 }
 
 
-/// cluster analysis
+/// Cluster analysis
 void Simulation::f_FindMulPtFB()
 {
     float borderCoordAll[4]; // for the coordinates of the border of a cluster area: xL xR yD yU
     std::vector<float> v_xObs, v_yObs;
-    v_xObs.clear();
-    v_yObs.clear();
     float overallArea, MCDist, MCPointX, MCPointY, MCStep, n_k, S_k, eta_k;
     usint MCNThrown, MCNAll, N_k;
     uint nF_k, nB_k;
@@ -160,8 +158,8 @@ void Simulation::f_FindMulPtFB()
         {
             N_k = v_compData[clusIter].size();
 
-            v_xObs.resize(N_k);
-            v_yObs.resize(N_k);
+            v_xObs = std::vector<float>(N_k);
+            v_yObs = std::vector<float>(N_k);
 
             for(usint obsIter = 0; obsIter < v_compData[clusIter].size(); obsIter++)
             {
@@ -169,19 +167,17 @@ void Simulation::f_FindMulPtFB()
                 v_yObs[obsIter] = v_y[v_compData[clusIter][obsIter]];
             }
 
-            borderCoordAll[0] = *std::max_element(v_xObs.begin(), v_xObs.end()) + rs - 0.001; // x max [0]
-            borderCoordAll[1] = *std::min_element(v_xObs.begin(), v_xObs.end()) - rs + 0.001; // x min [1]
-            borderCoordAll[2] = *std::max_element(v_yObs.begin(), v_yObs.end()) + rs - 0.001; // y max [2]
-            borderCoordAll[3] = *std::min_element(v_yObs.begin(), v_yObs.end()) - rs + 0.001; // y min [3]
+            borderCoordAll[0] = *std::max_element(v_xObs.begin(), v_xObs.end()) + rs - 0.01; // x max [0]
+            borderCoordAll[1] = *std::min_element(v_xObs.begin(), v_xObs.end()) - rs + 0.01; // x min [1]
+            borderCoordAll[2] = *std::max_element(v_yObs.begin(), v_yObs.end()) + rs - 0.01; // y max [2]
+            borderCoordAll[3] = *std::min_element(v_yObs.begin(), v_yObs.end()) - rs + 0.01; // y min [3]
 
-            MCPointX = borderCoordAll[1] + 0.003;
-            MCPointY = borderCoordAll[3] + 0.003;
             MCNThrown = 0; // overall
             MCNAll = 0; // in the string
             MCDist = 0;
-            //MCStep = 0.01*sqrt(sqrt(sqrt(N_k))); // triple
-            MCStep = 0.01*sqrt(sqrt(sqrt(sqrt(N_k)))); // quadruple
-            //MCStep = 0.01;
+            //MCStep = R*0.01*sqrt(sqrt(sqrt(N_k))); // triple
+            //MCStep = R*0.01*sqrt(sqrt(sqrt(sqrt(N_k)))); // quadruple
+            MCStep = R*0.01;
 
             //#pragma omp parallel for
             for(MCPointY = borderCoordAll[3]; MCPointY <= borderCoordAll[2]; MCPointY += MCStep)
@@ -204,8 +200,8 @@ void Simulation::f_FindMulPtFB()
 
             overallArea = (borderCoordAll[0] - borderCoordAll[1]) * (borderCoordAll[2] - borderCoordAll[3]);
 
-            S_k = overallArea * (1 + 0.087 / N_k) * MCNAll / MCNThrown; // in order to approximate real string size
-            //S_k = overallArea * MCNAll / MCNThrown;
+            //S_k = overallArea * (1 + 0.087 / N_k) * MCNAll / MCNThrown; // in order to approximate real string size
+            S_k = overallArea * MCNAll / MCNThrown;
 
             n_k = sqrt(N_k * S_k / stringSigma);
             std::poisson_distribution<uint> disPois_nn(n_k);

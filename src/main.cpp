@@ -25,7 +25,7 @@ int main()
 	//const usint nn = 7;
 	//const uint nn_arr[nn] = {100, 250, 550, 1100, 3300, 5600, 12200};
 	const usint nn = 1;
-	const uint nn_arr[nn] = {15000};
+	const uint nn_arr[nn] = {5600};
 	std::mt19937 gen;
 	std::vector<uint> nF_vec, nB_vec;
 	std::vector<float> pF_vec, pB_vec;
@@ -39,20 +39,20 @@ int main()
     float b_nn, b_pp; //
 	float *np;
 
-	//data_nF_i.open("data_nF_i.txt", std::ios_base::app);
-	//data_nB_i.open("data_nB_i.txt", std::ios_base::app);
-	//data_pF_i.open("data_pF_i.txt", std::ios_base::app);
-	//data_pB_i.open("data_pB_i.txt", std::ios_base::app);
+	data_nF_i.open("data_nF_i.txt", std::ios_base::app);
+	data_nB_i.open("data_nB_i.txt", std::ios_base::app);
+	data_pF_i.open("data_pF_i.txt", std::ios_base::app);
+	data_pB_i.open("data_pB_i.txt", std::ios_base::app);
 	data_b.open("data_b.txt", std::ios_base::app);
 
 
 	for(usint nn_iter = 0; nn_iter < nn; nn_iter++)
 	{
 		std::cout << "\nN_mean:\t" << nn_arr[nn_iter] << std::endl;
-		//data_nF_i << std::endl << nn_arr[nn_iter] << "\t\t";
-		//data_nB_i << std::endl << nn_arr[nn_iter] << "\t\t";
-		//data_pF_i << std::endl << nn_arr[nn_iter] << "\t\t";
-		//data_pB_i << std::endl << nn_arr[nn_iter] << "\t\t";
+		data_nF_i << std::endl << nn_arr[nn_iter] << "\t\t";
+		data_nB_i << std::endl << nn_arr[nn_iter] << "\t\t";
+		data_pF_i << std::endl << nn_arr[nn_iter] << "\t\t";
+		data_pB_i << std::endl << nn_arr[nn_iter] << "\t\t";
 		data_b << std::endl << nn_arr[nn_iter] << "\t\t";
 
 		for(uint sim_iter = 0; sim_iter < n_sim; sim_iter++)
@@ -64,9 +64,9 @@ int main()
 			Sim.f_FillGraph();
 			Sim.f_FindConnComp();
 
-			tLog = clock();
+			//tLog = clock();
 			Sim.f_FindMulPtFB();
-			std::cout << "\t f_FindMulPtFB: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
+			//std::cout << "\t f_FindMulPtFB: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
 
 			np = Sim.f_returnNP();
 			nF_vec[sim_iter] = np[0];
@@ -74,13 +74,16 @@ int main()
 			pF_vec[sim_iter] = np[2];
 			pB_vec[sim_iter] = np[3];
 
-			//data_nF_i << nF_vec[sim_iter] << "\t";
-    		//data_nB_i << nB_vec[sim_iter] << "\t";
-    		//data_pF_i << pF_vec[sim_iter] << "\t";
-    		//data_pB_i << pB_vec[sim_iter] << "\t";
+			std::cout << "\nTrue nF:\t" << nF_vec[sim_iter] << "\t";
+    		std::cout << "\nTrue nB:\t" << nB_vec[sim_iter] << "\t";
 
-            //std::cout << "\nIteration:\t" << sim_iter + 1 << "\tcomplete" << std::endl;
-			//std::cout << "*********************************\n";
+			data_nF_i << nF_vec[sim_iter] << "\t";
+    		data_nB_i << nB_vec[sim_iter] << "\t";
+    		data_pF_i << pF_vec[sim_iter] << "\t";
+    		data_pB_i << pB_vec[sim_iter] << "\t";
+
+            std::cout << "\nIteration:\t" << sim_iter + 1 << "\tcompleted" << std::endl;
+			std::cout << "*********************************\n";
 		}
 
 		// nn
@@ -129,10 +132,10 @@ int main()
 	}
 	
 
-	//data_nF_i.close();
-    //data_nB_i.close();
-    //data_pF_i.close();
-    //data_pB_i.close();
+	data_nF_i.close();
+    data_nB_i.close();
+    data_pF_i.close();
+    data_pB_i.close();
     data_b.close();
 
 	std::cout << "\nDone! Execution time: " << (float)(clock() - tStart)/CLOCKS_PER_SEC << " sec." <<  std::endl;
