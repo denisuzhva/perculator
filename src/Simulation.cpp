@@ -212,7 +212,7 @@ void Simulation::f_FindMulPtFB()
 
             eta_k = N_k * stringSigma / S_k;
             sumPtF_av += nF_k * sqrt(sqrt(eta_k));
-            sumPtB_av += nF_k * sqrt(sqrt(eta_k));
+            sumPtB_av += nB_k * sqrt(sqrt(eta_k));
             sumPtF_disp += nF_k * sqrt(eta_k);
             sumPtB_disp += nB_k * sqrt(eta_k);
         }
