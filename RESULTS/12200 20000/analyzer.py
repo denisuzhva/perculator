@@ -1,30 +1,30 @@
 import numpy as np
 import math
 
-########
-# 5600 #
-########
+#########
+# 12200 #
+#########
 
 
 def load_data(title):
-    data = np.zeros((4, 2500), dtype=float)
+    data = np.zeros((2, 4, 2500), dtype=float)
     data_temp = np.loadtxt('./1_run/1_verse/data_%s_i.txt' % title)
-    data[0] = np.delete(data_temp, 0)
+    data[0, 0] = np.delete(data_temp, 0)
     data_temp = np.loadtxt('./1_run/2_verse/data_%s_i.txt' % title)
-    data[1] = np.delete(data_temp, 0)
+    data[0, 1] = np.delete(data_temp, 0)
     data_temp = np.loadtxt('./1_run/3_verse/data_%s_i.txt' % title)
-    data[2] = np.delete(data_temp, 0)
+    data[0, 2] = np.delete(data_temp, 0)
     data_temp = np.loadtxt('./1_run/4_verse/data_%s_i.txt' % title)
-    data[3] = np.delete(data_temp, 0)
+    data[0, 3] = np.delete(data_temp, 0)
 
-    #data_temp = np.loadtxt('./2_run/1_verse/data_%s_i.txt' % title)
-    #data[1, 0] = np.delete(data_temp, 0)
-    #data_temp = np.loadtxt('./2_run/2_verse/data_%s_i.txt' % title)
-    #data[1, 1] = np.delete(data_temp, 0)
-    #data_temp = np.loadtxt('./2_run/3_verse/data_%s_i.txt' % title)
-    #data[1, 2] = np.delete(data_temp, 0)
-    #data_temp = np.loadtxt('./2_run/4_verse/data_%s_i.txt' % title)
-    #data[1, 3] = np.delete(data_temp, 0)
+    data_temp = np.loadtxt('./2_run/1_verse/data_%s_i.txt' % title)
+    data[1, 0] = np.delete(data_temp, 0)
+    data_temp = np.loadtxt('./2_run/2_verse/data_%s_i.txt' % title)
+    data[1, 1] = np.delete(data_temp, 0)
+    data_temp = np.loadtxt('./2_run/3_verse/data_%s_i.txt' % title)
+    data[1, 2] = np.delete(data_temp, 0)
+    data_temp = np.loadtxt('./2_run/4_verse/data_%s_i.txt' % title)
+    data[1, 3] = np.delete(data_temp, 0)
 
     data_tot = data.reshape(-1)
     return data_tot
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     stringSigma = math.pi*rs*rs
     gamma_squared = 0.5
 
-    nn = 5600.0
+    nn = 12200.0
     eta = nn * stringSigma / S_0
 
     print('b_nn (calc): %f' % b_nn_fun(eta))
