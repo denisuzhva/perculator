@@ -7,7 +7,7 @@ import math
 
 
 def load_data(title):
-    data = np.zeros((4, 2500), dtype=float)
+    data = np.zeros((4, 5000), dtype=float)
     data_temp = np.loadtxt('./1_run/1_verse/data_%s_i.txt' % title)
     data[0] = np.delete(data_temp, 0)
     data_temp = np.loadtxt('./1_run/2_verse/data_%s_i.txt' % title)

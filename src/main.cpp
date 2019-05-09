@@ -22,18 +22,20 @@ int main()
 	clock_t tLog;
 
 	
-	//const usint nn = 7;
-	//const uint nn_arr[nn] = {100, 250, 550, 1100, 3300, 5600, 12200};
-	const usint nn = 1;
-	const uint nn_arr[nn] = {5600};
+	const usint nn = 5;
+	const uint nn_arr[nn] = {100, 250, 550, 1100, 3300};
+	//const usint nn = 1;
+	//const uint nn_arr[nn] = {5600};
 	std::mt19937 gen;
 	std::vector<uint> nF_vec, nB_vec;
 	std::vector<float> pF_vec, pB_vec;
+	std::vector<float> pF_vec_test, pB_vec_test;
 	nF_vec.resize(n_sim);
 	nB_vec.resize(n_sim);
 	pF_vec.resize(n_sim);
 	pB_vec.resize(n_sim);
 	std::ofstream data_nF_i, data_nB_i, data_pF_i, data_pB_i, data_b;
+	std::ofstream data_pF_test_i, data_pB_test_i; // TEST
 	float nFnB_av, nF_av, nB_av, nF2_av, nF_av2; // averaging for the multiplicities
     float pFpB_av, pF_av, pB_av, pF2_av, pF_av2; // averaging for the pt
     float b_nn, b_pp; //
@@ -43,6 +45,8 @@ int main()
 	data_nB_i.open("data_nB_i.txt", std::ios_base::app);
 	data_pF_i.open("data_pF_i.txt", std::ios_base::app);
 	data_pB_i.open("data_pB_i.txt", std::ios_base::app);
+	data_pF_test_i.open("data_pF_test_i.txt", std::ios_base::app); // TEST
+	data_pB_test_i.open("data_pB_test_i.txt", std::ios_base::app); // TEST
 	data_b.open("data_b.txt", std::ios_base::app);
 
 
@@ -53,7 +57,20 @@ int main()
 		data_nB_i << std::endl << nn_arr[nn_iter] << "\t\t";
 		data_pF_i << std::endl << nn_arr[nn_iter] << "\t\t";
 		data_pB_i << std::endl << nn_arr[nn_iter] << "\t\t";
+		data_pF_test_i << std::endl << nn_arr[nn_iter] << "\t\t";
+		data_pF_test_i << std::endl << nn_arr[nn_iter] << "\t\t";
 		data_b << std::endl << nn_arr[nn_iter] << "\t\t";
+
+		nFnB_av = 0;
+		nF_av = 0;
+		nB_av = 0;
+		nF2_av = 0;
+		nF_av2 = 0;
+		pFpB_av = 0;
+		pF_av = 0;
+		pB_av = 0;
+		pF2_av = 0;
+		pF_av2 = 0;
 
 		for(uint sim_iter = 0; sim_iter < n_sim; sim_iter++)
 		{
@@ -73,14 +90,19 @@ int main()
 			nB_vec[sim_iter] = np[1];
 			pF_vec[sim_iter] = np[2];
 			pB_vec[sim_iter] = np[3];
+			pF_vec_test[sim_iter] = np[4];
+			pB_vec_test[sim_iter] = np[5];
 
-			std::cout << "\nTrue nF:\t" << nF_vec[sim_iter] << "\t";
-    		std::cout << "\nTrue nB:\t" << nB_vec[sim_iter] << "\t";
+
+			//std::cout << "\nTrue nF:\t" << nF_vec[sim_iter] << "\t";
+    		//std::cout << "\nTrue nB:\t" << nB_vec[sim_iter] << "\t";
 
 			data_nF_i << nF_vec[sim_iter] << "\t";
     		data_nB_i << nB_vec[sim_iter] << "\t";
     		data_pF_i << pF_vec[sim_iter] << "\t";
     		data_pB_i << pB_vec[sim_iter] << "\t";
+    		data_pF_test_i << pF_vec_test[sim_iter] << "\t";
+    		data_pB_test_i << pB_vec_test[sim_iter] << "\t";
 
             std::cout << "\nIteration:\t" << sim_iter + 1 << "\tcompleted" << std::endl;
 			std::cout << "*********************************\n";
@@ -136,6 +158,8 @@ int main()
     data_nB_i.close();
     data_pF_i.close();
     data_pB_i.close();
+	data_pF_test_i.close();
+	data_pB_test_i.close();
     data_b.close();
 
 	std::cout << "\nDone! Execution time: " << (float)(clock() - tStart)/CLOCKS_PER_SEC << " sec." <<  std::endl;

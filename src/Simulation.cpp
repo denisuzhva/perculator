@@ -221,21 +221,27 @@ void Simulation::f_FindMulPtFB()
     pB_i_av = sumPtB_av / nB_i;
     pF_i_disp = sumPtF_disp / (nF_i * nF_i);
     pB_i_disp = sumPtB_disp / (nB_i * nB_i);
-    std::normal_distribution<float> disNorm_ptptF(pF_i_av, ptGammaSquared*sqrt(pF_i_disp));
-    std::normal_distribution<float> disNorm_ptptB(pB_i_av, ptGammaSquared*sqrt(pB_i_disp));
-    pF_i = disNorm_ptptF(gen);
-    pB_i = disNorm_ptptB(gen);
+    std::normal_distribution<float> disNorm_ppF(pF_i_av, ptGammaSquared*sqrt(pF_i_disp));
+    std::normal_distribution<float> disNorm_ppB(pB_i_av, ptGammaSquared*sqrt(pB_i_disp));
+    std::normal_distribution<float> disNorm_ppF_test(pF_i_av/ptGammaSquared, sqrt(pF_i_disp));
+    std::normal_distribution<float> disNorm_ppB_test(pB_i_av/ptGammaSquared, sqrt(pB_i_disp));
+    pF_i = disNorm_ppF(gen);
+    pB_i = disNorm_ppB(gen);
+    pF_i_test_revgamma = disNorm_ppF_test(gen);
+    pB_i_test_revgamma = disNorm_ppB_test(gen);
 }
 
 
 // Out
 float* Simulation::f_returnNP()
 {
-    static float np_arr[4];
+    static float np_arr[6];
     np_arr[0] = nF_i;
     np_arr[1] = nB_i;
     np_arr[2] = pF_i;
     np_arr[3] = pB_i;
+    np_arr[4] = pF_i_test_revgamma;
+    np_arr[5] = pB_i_test_revgamma;
     //std::cout << "\nTrue nF:\t" << nF_i << "\t";
     //std::cout << "\nTrue nB:\t" << nB_i << "\t";
     //std::cout << "\nTrue pF:\t" << pF_i << "\t";
