@@ -60,7 +60,7 @@ int main()
 		data_pF_i << std::endl << nn_arr[nn_iter] << "\t\t";
 		data_pB_i << std::endl << nn_arr[nn_iter] << "\t\t";
 		data_pF_test_i << std::endl << nn_arr[nn_iter] << "\t\t";
-		data_pF_test_i << std::endl << nn_arr[nn_iter] << "\t\t";
+		data_pB_test_i << std::endl << nn_arr[nn_iter] << "\t\t";
 		data_b << std::endl << nn_arr[nn_iter] << "\t\t";
 
 		nFnB_av = 0;
