@@ -22,8 +22,8 @@ int main()
 	clock_t tLog;
 
 	
-	const usint nn = 5;
-	const uint nn_arr[nn] = {100, 250, 550, 1100, 3300};
+	//const usint nn = 5;
+	//const uint nn_arr[nn] = {100, 250, 550, 1100, 3300};
 	//const usint nn = 1;
 	//const uint nn_arr[nn] = {5600};
 	std::mt19937 gen;
