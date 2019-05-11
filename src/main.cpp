@@ -25,19 +25,16 @@ int main()
 	//const usint nn = 5;
 	//const uint nn_arr[nn] = {100, 250, 550, 1100, 3300};
 	const usint nn = 1;
-	const uint nn_arr[nn] = {5600};
+	//const uint nn_arr[nn] = {5600};
+	const float eta_arr[nn] = {0.1};
 	std::mt19937 gen;
 	std::vector<uint> nF_vec, nB_vec;
 	std::vector<float> pF_vec, pB_vec;
-	std::vector<float> pF_vec_test, pB_vec_test;
 	nF_vec.resize(n_sim);
 	nB_vec.resize(n_sim);
 	pF_vec.resize(n_sim);
 	pB_vec.resize(n_sim);
-	pF_vec_test.resize(n_sim);
-	pB_vec_test.resize(n_sim);
-	std::ofstream data_nF_i, data_nB_i, data_pF_i, data_pB_i, data_b;
-	std::ofstream data_pF_test_i, data_pB_test_i; // TEST
+	std::ofstream data_nF_i, data_nB_i, data_pF_i, data_pB_i;
 	float nFnB_av, nF_av, nB_av, nF2_av, nF_av2; // averaging for the multiplicities
     float pFpB_av, pF_av, pB_av, pF2_av, pF_av2; // averaging for the pt
     float b_nn, b_pp; //
@@ -47,21 +44,16 @@ int main()
 	data_nB_i.open("data_nB_i.txt", std::ios_base::app);
 	data_pF_i.open("data_pF_i.txt", std::ios_base::app);
 	data_pB_i.open("data_pB_i.txt", std::ios_base::app);
-	data_pF_test_i.open("data_pF_test_i.txt", std::ios_base::app); // TEST
-	data_pB_test_i.open("data_pB_test_i.txt", std::ios_base::app); // TEST
-	data_b.open("data_b.txt", std::ios_base::app);
 
 
 	for(usint nn_iter = 0; nn_iter < nn; nn_iter++)
 	{
-		std::cout << "\nN_mean:\t" << nn_arr[nn_iter] << std::endl;
-		data_nF_i << std::endl << nn_arr[nn_iter] << "\t\t";
-		data_nB_i << std::endl << nn_arr[nn_iter] << "\t\t";
-		data_pF_i << std::endl << nn_arr[nn_iter] << "\t\t";
-		data_pB_i << std::endl << nn_arr[nn_iter] << "\t\t";
-		data_pF_test_i << std::endl << nn_arr[nn_iter] << "\t\t";
-		data_pB_test_i << std::endl << nn_arr[nn_iter] << "\t\t";
-		data_b << std::endl << nn_arr[nn_iter] << "\t\t";
+
+		std::cout << "\neta_mean:\t" << eta_arr[nn_iter] << std::endl;
+		data_nF_i << std::endl << eta_arr[nn_iter] << "\t\t";
+		data_nB_i << std::endl << eta_arr[nn_iter] << "\t\t";
+		data_pF_i << std::endl << eta_arr[nn_iter] << "\t\t";
+		data_pB_i << std::endl << eta_arr[nn_iter] << "\t\t";
 
 		nFnB_av = 0;
 		nF_av = 0;
@@ -77,7 +69,7 @@ int main()
 		for(uint sim_iter = 0; sim_iter < n_sim; sim_iter++)
 		{
 			gen.seed(time(0) + rand());
-			Simulation Sim(gen, nn_arr[nn_iter]);
+			Simulation Sim(gen, eta_arr[nn_iter]);
 			Sim.f_nGen();
 			Sim.f_GenerateXY();
 			Sim.f_FillGraph();
@@ -92,8 +84,6 @@ int main()
 			nB_vec[sim_iter] = np[1];
 			pF_vec[sim_iter] = np[2];
 			pB_vec[sim_iter] = np[3];
-			pF_vec_test[sim_iter] = np[4];
-			pB_vec_test[sim_iter] = np[5];
 
 
 			//std::cout << "\nTrue nF:\t" << nF_vec[sim_iter] << "\t";
@@ -103,56 +93,12 @@ int main()
     		data_nB_i << nB_vec[sim_iter] << "\t";
     		data_pF_i << pF_vec[sim_iter] << "\t";
     		data_pB_i << pB_vec[sim_iter] << "\t";
-    		data_pF_test_i << pF_vec_test[sim_iter] << "\t";
-    		data_pB_test_i << pB_vec_test[sim_iter] << "\t";
 
             std::cout << "\nIteration:\t" << sim_iter + 1 << "\tcompleted" << std::endl;
 			std::cout << "*********************************\n";
 		}
 
-		// nn
-		for(uint i = 0; i < n_sim; i++)
-			nFnB_av += (float)(nF_vec[i]*nB_vec[i]);
-		nFnB_av /= n_sim;
-
-		for(uint i = 0; i < n_sim; i++)
-			nF_av += (float)(nF_vec[i]);
-		nF_av /= n_sim;
-
-		for(uint i = 0; i < n_sim; i++)
-			nB_av += (float)(nB_vec[i]);
-		nB_av /= n_sim;
-
-		for(uint i = 0; i < n_sim; i++)
-			nF2_av += (float)(nF_vec[i]*nF_vec[i]);
-		nF2_av /= n_sim;
-
-		nF_av2 = (float)(nF_av*nF_av);
-
-		// pp
-		for(uint i = 0; i < n_sim; i++)
-			pFpB_av += (float)(pF_vec[i]*pB_vec[i]);
-		pFpB_av /= n_sim;
-
-		for(uint i = 0; i < n_sim; i++)
-			pF_av += (float)(pF_vec[i]);
-		pF_av /= n_sim;
-
-		for(uint i = 0; i < n_sim; i++)
-			pB_av += (float)(pB_vec[i]);
-		pB_av /= n_sim;
-
-		for(uint i = 0; i < n_sim; i++)
-			pF2_av += (float)(pF_vec[i]*pF_vec[i]);
-		pF2_av /= n_sim;
-
-		pF_av2 = (float)(pF_av*pF_av);
-
-		// b
-		b_nn = (nFnB_av - nF_av*nB_av) / (nF2_av - nF_av2);
-    	b_pp = (pFpB_av - pF_av*pB_av) / (pF2_av - pF_av2);
-
-    	data_b << b_nn << "\t" << b_pp << "\t";
+		
 	}
 	
 
@@ -160,9 +106,6 @@ int main()
     data_nB_i.close();
     data_pF_i.close();
     data_pB_i.close();
-	data_pF_test_i.close();
-	data_pB_test_i.close();
-    data_b.close();
 
 	std::cout << "\nDone! Execution time: " << (float)(clock() - tStart)/CLOCKS_PER_SEC << " sec." <<  std::endl;
 	getchar();

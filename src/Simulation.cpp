@@ -5,7 +5,10 @@
 #include <omp.h>
 
 
-Simulation::Simulation(std::mt19937 genMain, uint n_mean_main) : gen(genMain), N_mean(n_mean_main) {}
+Simulation::Simulation(std::mt19937 genMain, float eta_mean) : gen(genMain) 
+{
+    N_mean = (int)(eta_mean * S_0 / stringSigma);
+}
 
 
 Simulation::~Simulation() {}
