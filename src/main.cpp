@@ -27,12 +27,16 @@ int main()
 	//const usint nn = 1;
 	//const uint nn_arr[nn] = {5600};
 	std::mt19937 gen;
-	std::vector<float> pF_vec, pB_vec;
+	std::vector<float> nF_vec, nB_vec, pF_vec, pB_vec;
+	nF_vec.resize(n_sim);
+	nB_vec.resize(n_sim);
 	pF_vec.resize(n_sim);
 	pB_vec.resize(n_sim);
-	std::ofstream data_pF_i, data_pB_i;
+	std::ofstream data_nF_i, data_nB_i, data_pF_i, data_pB_i;
 	float *np;
 
+	data_nF_i.open("data_nF_i.txt", std::ios_base::app);
+	data_nB_i.open("data_nB_i.txt", std::ios_base::app);
 	data_pF_i.open("data_pF_i.txt", std::ios_base::app);
 	data_pB_i.open("data_pB_i.txt", std::ios_base::app);
 
@@ -40,6 +44,8 @@ int main()
 	for(usint nn_iter = 0; nn_iter < nn; nn_iter++)
 	{
 		std::cout << "\nN_mean:\t" << nn_arr[nn_iter] << std::endl;
+		data_nF_i << std::endl << nn_arr[nn_iter] << "\t\t";
+		data_nB_i << std::endl << nn_arr[nn_iter] << "\t\t";
 		data_pF_i << std::endl << nn_arr[nn_iter] << "\t\t";
 		data_pB_i << std::endl << nn_arr[nn_iter] << "\t\t";
 
@@ -57,12 +63,16 @@ int main()
 			//std::cout << "\t f_FindMulPtFB: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
 
 			np = Sim.f_returnNP();
-			pF_vec[sim_iter] = np[0];
-			pB_vec[sim_iter] = np[1];
+			nF_vec[sim_iter] = np[0];
+			nB_vec[sim_iter] = np[1];
+			pF_vec[sim_iter] = np[2];
+			pB_vec[sim_iter] = np[3];
 
 			//std::cout << "\nTrue nF:\t" << nF_vec[sim_iter] << "\t";
     		//std::cout << "\nTrue nB:\t" << nB_vec[sim_iter] << "\t";
 
+    		data_nF_i << nF_vec[sim_iter] << "\t";
+    		data_nB_i << nB_vec[sim_iter] << "\t";
     		data_pF_i << pF_vec[sim_iter] << "\t";
     		data_pB_i << pB_vec[sim_iter] << "\t";
 
@@ -72,6 +82,8 @@ int main()
 	}
 	
 
+    data_nF_i.close();
+    data_nB_i.close();
     data_pF_i.close();
     data_pB_i.close();
 

@@ -232,8 +232,10 @@ void Simulation::f_FindMulPtFB()
 float* Simulation::f_returnNP()
 {
     static float np_arr[4];
-    np_arr[0] = pF_i;
-    np_arr[1] = pB_i;
+    np_arr[0] = nF_i;
+    np_arr[1] = nB_i;
+    np_arr[2] = pF_i;
+    np_arr[3] = pB_i;
     //std::cout << "\nTrue nF:\t" << nF_i << "\t";
     //std::cout << "\nTrue nB:\t" << nB_i << "\t";
     //std::cout << "\nTrue pF:\t" << pF_i << "\t";
