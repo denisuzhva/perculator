@@ -24,8 +24,8 @@ int main()
 	
 	//const usint nn = 5;
 	//const uint nn_arr[nn] = {100, 250, 550, 1100, 3300};
-	//const usint nn = 1;
-	//const uint nn_arr[nn] = {5600};
+	const usint nn = 1;
+	const uint nn_arr[nn] = {5600};
 	std::mt19937 gen;
 	std::vector<uint> nF_vec, nB_vec;
 	std::vector<float> pF_vec, pB_vec;
