@@ -213,7 +213,13 @@ void Simulation::f_FindMulPtFB()
             nF_i += (float)nF_k;
             nB_i += (float)nB_k;
 
+            std::cout << "*************************\n";
+            std::cout << "Cluster iter:\t" << clusIter << std::endl;
+            std::cout << "N_k:\t" << N_k << "\tS_k:\t" << S_k << "\tn_k:\t" << n_k << "\tnF_k:\t" << nF_k << "\tnB_k:\t" << nB_k << std::endl;
+
+
             eta_k = N_k * stringSigma / S_k;
+            std::cout << "eta_k:\t" << eta_k << std::endl;
             sumPtF_av += nF_k * sqrt(sqrt(eta_k));
             sumPtB_av += nB_k * sqrt(sqrt(eta_k));
             sumPtF_disp += nF_k * sqrt(eta_k);
@@ -224,14 +230,12 @@ void Simulation::f_FindMulPtFB()
     pB_i_av = sumPtB_av / nB_i;
     pF_i_disp = sumPtF_disp / (nF_i * nF_i);
     pB_i_disp = sumPtB_disp / (nB_i * nB_i);
-    std::normal_distribution<float> disNorm_ppF(pF_i_av, ptGammaSquared*sqrt(pF_i_disp));
-    std::normal_distribution<float> disNorm_ppB(pB_i_av, ptGammaSquared*sqrt(pB_i_disp));
-    std::normal_distribution<float> disNorm_ppF_test(pF_i_av/ptGammaSquared, sqrt(pF_i_disp));
-    std::normal_distribution<float> disNorm_ppB_test(pB_i_av/ptGammaSquared, sqrt(pB_i_disp));
+    std::normal_distribution<float> disNorm_ppF(pF_i_av, ptGamma*sqrt(pF_i_disp));
+    std::normal_distribution<float> disNorm_ppB(pB_i_av, ptGamma*sqrt(pB_i_disp));
     pF_i = disNorm_ppF(gen);
     pB_i = disNorm_ppB(gen);
-    pF_i_test_revgamma = disNorm_ppF_test(gen);
-    pB_i_test_revgamma = disNorm_ppB_test(gen);
+    std::cout << "pF_i:\t" << pF_i << "\tpB_i:\t" << pB_i << std::endl;
+    std::cout << "*************************\n";
 }
 
 
@@ -243,8 +247,6 @@ float* Simulation::f_returnNP()
     np_arr[1] = nB_i;
     np_arr[2] = pF_i;
     np_arr[3] = pB_i;
-    np_arr[4] = pF_i_test_revgamma;
-    np_arr[5] = pB_i_test_revgamma;
     //std::cout << "\nTrue nF:\t" << nF_i << "\t";
     //std::cout << "\nTrue nB:\t" << nB_i << "\t";
     //std::cout << "\nTrue pF:\t" << pF_i << "\t";

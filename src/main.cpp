@@ -26,7 +26,7 @@ int main()
 	//const uint nn_arr[nn] = {100, 250, 550, 1100, 3300};
 	const usint nn = 1;
 	//const uint nn_arr[nn] = {5600};
-	const float eta_arr[nn] = {0.1};
+	const float eta_arr[nn] = {5};
 	std::mt19937 gen;
 	std::vector<uint> nF_vec, nB_vec;
 	std::vector<float> pF_vec, pB_vec;
@@ -34,26 +34,15 @@ int main()
 	nB_vec.resize(n_sim);
 	pF_vec.resize(n_sim);
 	pB_vec.resize(n_sim);
-	std::ofstream data_nF_i, data_nB_i, data_pF_i, data_pB_i;
 	float nFnB_av, nF_av, nB_av, nF2_av, nF_av2; // averaging for the multiplicities
     float pFpB_av, pF_av, pB_av, pF2_av, pF_av2; // averaging for the pt
     float b_nn, b_pp; //
-	float *np;
-
-	data_nF_i.open("data_nF_i.txt", std::ios_base::app);
-	data_nB_i.open("data_nB_i.txt", std::ios_base::app);
-	data_pF_i.open("data_pF_i.txt", std::ios_base::app);
-	data_pB_i.open("data_pB_i.txt", std::ios_base::app);
 
 
 	for(usint nn_iter = 0; nn_iter < nn; nn_iter++)
 	{
 
 		std::cout << "\neta_mean:\t" << eta_arr[nn_iter] << std::endl;
-		data_nF_i << std::endl << eta_arr[nn_iter] << "\t\t";
-		data_nB_i << std::endl << eta_arr[nn_iter] << "\t\t";
-		data_pF_i << std::endl << eta_arr[nn_iter] << "\t\t";
-		data_pB_i << std::endl << eta_arr[nn_iter] << "\t\t";
 
 		nFnB_av = 0;
 		nF_av = 0;
@@ -79,33 +68,15 @@ int main()
 			Sim.f_FindMulPtFB();
 			//std::cout << "\t f_FindMulPtFB: \t" << (float)(clock() - tLog)/CLOCKS_PER_SEC << std::endl;
 
-			np = Sim.f_returnNP();
-			nF_vec[sim_iter] = np[0];
-			nB_vec[sim_iter] = np[1];
-			pF_vec[sim_iter] = np[2];
-			pB_vec[sim_iter] = np[3];
-
 
 			//std::cout << "\nTrue nF:\t" << nF_vec[sim_iter] << "\t";
     		//std::cout << "\nTrue nB:\t" << nB_vec[sim_iter] << "\t";
 
-			data_nF_i << nF_vec[sim_iter] << "\t";
-    		data_nB_i << nB_vec[sim_iter] << "\t";
-    		data_pF_i << pF_vec[sim_iter] << "\t";
-    		data_pB_i << pB_vec[sim_iter] << "\t";
-
-            std::cout << "\nIteration:\t" << sim_iter + 1 << "\tcompleted" << std::endl;
-			std::cout << "*********************************\n";
-		}
-
-		
+            //std::cout << "\nIteration:\t" << sim_iter + 1 << "\tcompleted" << std::endl;
+			//std::cout << "*********************************\n";
+		}		
 	}
 	
-
-	data_nF_i.close();
-    data_nB_i.close();
-    data_pF_i.close();
-    data_pB_i.close();
 
 	std::cout << "\nDone! Execution time: " << (float)(clock() - tStart)/CLOCKS_PER_SEC << " sec." <<  std::endl;
 	getchar();
