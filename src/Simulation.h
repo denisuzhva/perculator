@@ -37,7 +37,7 @@ class Simulation
 
         constexpr static float R = 7.5, rs = 0.225; // nucleus' radius, string's radius
         constexpr static float S_0 = M_PI*R*R, stringSigma = M_PI*rs*rs; // area of a nucleus and a string
-        constexpr static float ptGammaSquared = 0.5; // proportionality coefficient in pt distribution
+        constexpr static float ptGamma = 0.707107; // proportionality coefficient in pt distribution
 
         usint N_mean, N;
         std::vector<float> v_x; // vector of x coordinates
