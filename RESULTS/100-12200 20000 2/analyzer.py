@@ -9,7 +9,7 @@ def processDataset(title):
     data_tens = np.zeros((4, nn, 5001))
     for verse_iter in list(range(4)):
         #print('verse_iter: %i' % verse_iter)
-        filename_read = './1_run/{0}_verse/data_{1}_i.txt'.format(verse_iter + 1, title)
+        filename_read = './2_run/{0}_verse/data_{1}_i.txt'.format(verse_iter + 1, title)
         dataset_file = open(filename_read, 'r')
         dataset_lines = dataset_file.readlines()
         dataset_file.close()
@@ -23,7 +23,7 @@ def processDataset(title):
     for i in list(range(nn)):
         new_data_tens[i, :] = np.reshape(data_tens[:, i, :], -1)
     
-    filename_save = './1_run/total/data_{}_i.txt'.format(title)
+    filename_save = './2_run/total/data_{}_i.txt'.format(title)
     np.savetxt(filename_save, new_data_tens)
 
 
@@ -55,8 +55,12 @@ def plot_b(eta, b, x_fun, y_fun, title, formula):
 if __name__ == "__main__":
     makeTotal() # EXECUTE ONLY ONCE
 
-    pF = np.loadtxt('./1_run/total/data_pF_i.txt')
-    pB = np.loadtxt('./1_run/total/data_pB_i.txt')
+    pF1 = np.loadtxt('./1_run/total/data_pF_i.txt')
+    pB1 = np.loadtxt('./1_run/total/data_pB_i.txt')
+    pF2 = np.loadtxt('./2_run/total/data_pF_i.txt')
+    pB2 = np.loadtxt('./2_run/total/data_pB_i.txt')
+    pF = np.concatenate()
+
     pFpB_av = np.average((pF * pB), axis=1)
     pF_av = np.average((pF), axis=1)
     pB_av = np.average((pB), axis=1)
