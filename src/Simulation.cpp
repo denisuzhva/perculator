@@ -133,6 +133,7 @@ void Simulation::f_dfs(usint v)
 
 
 /// Cluster analysis
+/*
 void Simulation::f_FindMulPtFB()
 {
     float borderCoordAll[4]; // for the coordinates of the border of a cluster area: xL xR yD yU
@@ -211,16 +212,55 @@ void Simulation::f_FindMulPtFB()
             nB_i += (float)nB_k;
 
             eta_k = N_k * stringSigma / S_k;
-            sumPtF_av += nF_k * sqrt(sqrt(eta_k));
-            sumPtB_av += nB_k * sqrt(sqrt(eta_k));
-            sumPtF_disp += nF_k * sqrt(eta_k);
-            sumPtB_disp += nB_k * sqrt(eta_k);
+            sumPtF_av += (float)nF_k * sqrt(sqrt(eta_k));
+            sumPtB_av += (float)nB_k * sqrt(sqrt(eta_k));
+            sumPtF_disp += (float)nF_k * sqrt(eta_k);
+            sumPtB_disp += (float)nB_k * sqrt(eta_k);
         }
     }
     pF_i_av = sumPtF_av / nF_i;
     pB_i_av = sumPtB_av / nB_i;
     pF_i_disp = sumPtF_disp / (nF_i * nF_i);
     pB_i_disp = sumPtB_disp / (nB_i * nB_i);
+    std::normal_distribution<float> disNorm_ppF(pF_i_av, ptGamma*sqrt(pF_i_disp));
+    std::normal_distribution<float> disNorm_ppB(pB_i_av, ptGamma*sqrt(pB_i_disp));
+    pF_i = disNorm_ppF(gen);
+    pB_i = disNorm_ppB(gen);
+}
+*/
+
+
+void Simulation::f_FindMulPtFB()
+{
+    uint nF_k, nB_k;
+
+    nF_i = 0;
+    nB_i = 0;
+    pF_i = 0;
+    pB_i = 0;
+    sumPtF_av = 0;
+    sumPtB_av = 0;
+    sumPtF_disp = 0;
+    sumPtB_disp = 0;
+
+    #pragma omp parallel for
+    for(int clusIter = 0; clusIter < N; clusIter++)
+    {
+        poisson_distribution<int> disPois(1);
+        nF_k = disPois(gen);
+        nB_k = disPois(gen);
+        nF_i += nF_k;
+        nB_i += nB_k;        
+    }
+    sumPtF_av += (float)nF_i;
+    sumPtB_av += (float)nB_i;
+    sumPtF_disp += (float)nF_i;
+    sumPtB_disp += (float)nB_i;
+
+    pF_i_av = 1;
+    pB_i_av = 1;
+    pF_i_disp = 1 / nF_i;
+    pB_i_disp = 1 / nB_i;
     std::normal_distribution<float> disNorm_ppF(pF_i_av, ptGamma*sqrt(pF_i_disp));
     std::normal_distribution<float> disNorm_ppB(pB_i_av, ptGamma*sqrt(pB_i_disp));
     pF_i = disNorm_ppF(gen);

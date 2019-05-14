@@ -55,8 +55,8 @@ int main()
 			Simulation Sim(gen, nn_arr[nn_iter]);
 			Sim.f_nGen();
 			Sim.f_GenerateXY();
-			Sim.f_FillGraph();
-			Sim.f_FindConnComp();
+			//Sim.f_FillGraph();
+			//Sim.f_FindConnComp();
 
 			//tLog = clock();
 			Sim.f_FindMulPtFB();
