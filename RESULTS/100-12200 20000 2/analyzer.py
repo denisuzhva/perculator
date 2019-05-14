@@ -59,7 +59,8 @@ if __name__ == "__main__":
     pB1 = np.loadtxt('./1_run/total/data_pB_i.txt')
     pF2 = np.loadtxt('./2_run/total/data_pF_i.txt')
     pB2 = np.loadtxt('./2_run/total/data_pB_i.txt')
-    pF = np.concatenate()
+    pF = np.concatenate((pF1, pF2), axis=1)
+    pB = np.concatenate((pB1, pB2), axis=1)
 
     pFpB_av = np.average((pF * pB), axis=1)
     pF_av = np.average((pF), axis=1)
