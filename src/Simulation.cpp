@@ -243,15 +243,10 @@ void Simulation::f_FindMulPtFB()
     sumPtF_disp = 0;
     sumPtB_disp = 0;
 
-    #pragma omp parallel for
-    for(int clusIter = 0; clusIter < N; clusIter++)
-    {
-        poisson_distribution<int> disPois(1);
-        nF_k = disPois(gen);
-        nB_k = disPois(gen);
-        nF_i += nF_k;
-        nB_i += nB_k;        
-    }
+    std::poisson_distribution<int> disPois(N);
+    nF_i = disPois(gen);
+    nB_i = disPois(gen);
+
     sumPtF_av += (float)nF_i;
     sumPtB_av += (float)nB_i;
     sumPtF_disp += (float)nF_i;
