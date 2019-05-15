@@ -32,7 +32,8 @@ class Simulation
         //unsigned int nRangeSize = sizeof(nRange)/sizeof(*nRange); // N range size
 
         //vector<unsigned int> v_nRange; // N range vector
-        array<int, 14> a_nRange{ {50, 100, 500, 750, 1000, 1250, 1500, 2000, 3000, 4000, 5000, 6000, 9000, 12000} }; // N range array
+        //array<int, 14> a_nRange{ {50, 100, 500, 750, 1000, 1250, 1500, 2000, 3000, 4000, 5000, 6000, 9000, 12000} }; // N range array
+        array<int, 4> a_nRange{ {5, 10, 15, 25} }; // N range array
         //array<int, 1> a_nRange{ {1} };
         unsigned int N; // N iterating over nRange
         //double *x, *y; // arrays of coordinates

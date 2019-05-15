@@ -3,6 +3,7 @@
 #include <random>
 #include <algorithm>
 #include <time.h>
+#include <omp.h>
 
 using namespace std;
 
@@ -81,6 +82,8 @@ void Simulation::f_FillGraph()
         g_connGraph.push_back(temp);
         temp.clear();
     }
+
+    #pragma omp parallel for
     for(int i = 0; i < N; i++)
     {
         for(int j = 0; j < N; j++)
