@@ -247,10 +247,10 @@ void Simulation::f_FindMulPtFB()
     nF_i = disPois(gen);
     nB_i = disPois(gen);
 
-    sumPtF_av += (float)nF_i;
-    sumPtB_av += (float)nB_i;
-    sumPtF_disp += (float)nF_i;
-    sumPtB_disp += (float)nB_i;
+    sumPtF_av = (float)nF_i;
+    sumPtB_av = (float)nB_i;
+    sumPtF_disp = (float)nF_i;
+    sumPtB_disp = (float)nB_i;
 
     pF_i_av = 1;
     pB_i_av = 1;
