@@ -93,7 +93,7 @@ if __name__ == "__main__":
     nn_formula = r'$\frac{1}{(1+4 \cdot \sqrt{\eta)}}$'
     pp_formula = r'$\frac{1}{(1+16 \cdot \gamma^2 \cdot \sqrt{\eta})} \quad \gamma^2 = 0.5)$'
 
-    #plotter(eta, b_pp_f, b_pp_nf, x_fun, y_fun_pp, 1.1, r'$b_{p_tp_t}$ — fusion, no-fusion and asymptotics', pp_formula, r'$b_{p_tp_t}$')
+    plotter(eta, b_pp_f, b_pp_nf, x_fun, y_fun_pp, 1.1, r'$b_{p_tp_t}$ — fusion, no-fusion and asymptotics', pp_formula, r'$b_{p_tp_t}$')
 
     
 
