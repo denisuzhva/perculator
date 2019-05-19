@@ -232,7 +232,11 @@ void Simulation::f_FindMulPtFB()
 
 void Simulation::f_FindMulPtFB()
 {
+    float overallArea, MCDist, MCPointX, MCPointY, MCStep, n_k, S_k, eta_k;
+    usint MCNThrown, MCNAll, N_k;
     uint nF_k, nB_k;
+
+    //cout << v_compData.size() << endl;
 
     nF_i = 0;
     nB_i = 0;
@@ -243,19 +247,28 @@ void Simulation::f_FindMulPtFB()
     sumPtF_disp = 0;
     sumPtB_disp = 0;
 
-    std::poisson_distribution<int> disPois(N);
-    nF_i = disPois(gen);
-    nB_i = disPois(gen);
 
-    sumPtF_av = (float)nF_i;
-    sumPtB_av = (float)nB_i;
-    sumPtF_disp = (float)nF_i;
-    sumPtB_disp = (float)nB_i;
+    for(usint i = 0; i < N; i++)
+    {
+	    N_k = 1;
+	    S_k = stringSigma;
+            n_k = sqrt(N_k * S_k / stringSigma);
+            std::poisson_distribution<uint> disPois_nn(n_k);
+            nF_k = disPois_nn(gen);
+            nB_k = disPois_nn(gen);
+            nF_i += (float)nF_k;
+            nB_i += (float)nB_k;
 
-    pF_i_av = 1;
-    pB_i_av = 1;
-    pF_i_disp = 1 / nF_i;
-    pB_i_disp = 1 / nB_i;
+            eta_k = N_k * stringSigma / S_k;
+            sumPtF_av += (float)nF_k * sqrt(sqrt(eta_k));
+            sumPtB_av += (float)nB_k * sqrt(sqrt(eta_k));
+            sumPtF_disp += (float)nF_k * sqrt(eta_k);
+            sumPtB_disp += (float)nB_k * sqrt(eta_k);
+    }
+    pF_i_av = sumPtF_av / nF_i;
+    pB_i_av = sumPtB_av / nB_i;
+    pF_i_disp = sumPtF_disp / (nF_i * nF_i);
+    pB_i_disp = sumPtB_disp / (nB_i * nB_i);
     std::normal_distribution<float> disNorm_ppF(pF_i_av, ptGamma*sqrt(pF_i_disp));
     std::normal_distribution<float> disNorm_ppB(pB_i_av, ptGamma*sqrt(pB_i_disp));
     pF_i = disNorm_ppF(gen);
