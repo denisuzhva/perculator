@@ -6,7 +6,7 @@ This software may be useful in the exploration of the colored string model, sinc
 
 The master branch contains a complete working version of simulator, capable of calculating the nn and ptpt correlation coefficients. 
 
-The readme will be complemented... The software, undoubtedly, needs to be revised, since there is much work to do regarding optimisation.
+The readme will be complemented... The software, undoubtedly, needs to be revised, since there is much work to do regarding optimisation and refactoring.
 
 ▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲▼▲ more info under the triangles
 
