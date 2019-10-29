@@ -1,6 +1,6 @@
 # Perculator
 
-Here is a Monte-Carlo simulator, which models colored hadron strings, interacting at high energies in hadron colliders (LHC, FAIR, NICA, etc). The name "perculator" stands for PERColation calcULATOR, where percolation (more precisely, percolation transition) is a physical phenomenon of an abnormally rapid change of some parameters at relatively slow changes of other parameters, which the former are depending on.
+Here is a Monte-Carlo simulator, which models colored hadron strings, interacting at high energies in hadron colliders (LHC, FAIR, NICA, etc). The name "perculator" stands for PERColation calcULATOR.
 
 This software may be useful in the exploration of the colored string model, since it exploits a continuous area of a cross section, unlike all previous simulators created for this purpose.
 
